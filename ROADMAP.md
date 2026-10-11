@@ -35,6 +35,9 @@ edilir. Web uygulaması ve emülatör hedeflenmez.
 - 2026-10-11: Kullanıcı telefonunun Samsung S22 ve Android 16 olduğunu
   bildirdi. Gradle çalıştırıcısı oluşturuldu; APK kimliği ve desteklenecek
   en eski Android sürümü için kullanıcı kararı bekleniyor.
+- 2026-10-11: Android SDK 36 da kuruldu. Android Gradle eklentisi 8.13.2 ve
+  Kotlin eklentileri 2.2.20 indirildi; `./gradlew help` başarıyla tamamlandı.
+  Bu, henüz APK derlemesi veya ekran ön izlemesi değildir.
 - Sıradaki iş: Bu iki karardan sonra Android uygulama modülünü oluşturup
   derlemek.
 
