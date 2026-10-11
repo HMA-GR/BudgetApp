@@ -8,3 +8,6 @@
 - Kritik ürün kararlarını kullanıcıya sor; yanıt gelene kadar bağımsız,
   geri alınabilir işleri yap.
 - Kişisel bütçe verilerini, yedek dosyalarını ve gizli anahtarları Git'e ekleme.
+- Compose ekranı değiştiğinde ekran görüntüsü test referanslarını ve
+  `docs/previews/` içindeki tarayıcı ön izlemelerini yenileyip görsel olarak
+  kontrol et; eski görüntüleri güncel tasarım diye sunma.

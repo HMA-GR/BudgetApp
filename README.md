@@ -5,7 +5,21 @@ ekran ön izlemesi** aşamasında: aylık bütçe kaydetme ve yedekleme henüz
 uygulanmadı. Güncel aşamalar ve alınmış kararlar [ROADMAP.md](ROADMAP.md)
 dosyasında tutulur.
 
-## Bilgisayarda ekranları ön izleme
+## Tarayıcıdan ekran ön izlemesi
+
+Android Studio kurmadan GitHub'da şu iki ekranı açabilirsin:
+
+- [Örnek bütçe ekranı](docs/previews/sample-budget.png)
+- [Boş bütçe ekranı](docs/previews/empty-budget.png)
+
+<a href="docs/previews/sample-budget.png"><img src="docs/previews/sample-budget.png" alt="Örnek bütçe ekranı" width="280"></a>
+<a href="docs/previews/empty-budget.png"><img src="docs/previews/empty-budget.png" alt="Boş bütçe ekranı" width="280"></a>
+
+Bu görüntüler Android uygulamasının Compose ekranından üretilir. Yalnızca
+görsel ön izlemedir; tıklanabilir uygulama veya web uygulaması değildir.
+Örnek rakamlar telefona kaydedilmez.
+
+## Android Studio ile canlı ekran ön izlemesi (isteğe bağlı)
 
 1. [Android Studio](https://developer.android.com/studio) kur. Emülatör
    kurman gerekmiyor.
@@ -31,3 +45,11 @@ satırında macOS/Linux için `./gradlew :app:assembleDebug`, Windows için
 
 Bu ilk APK boş ekran düzenini açar. Gerçek bütçe, kayıt ve yedekleme
 işlevleri yol haritasının sonraki aşamalarında eklenecek.
+
+## Ekran görüntülerini yenileme
+
+Ekran kodu değişince Android SDK ve JDK kurulu bilgisayarda
+`./gradlew :app:updateDebugScreenshotTest` çalıştır. Üretilen referans
+görüntüler `app/src/screenshotTestDebug/reference/` klasöründedir.
+Tarayıcıda gösterilen `docs/previews/` kopyalarını da güncelle ve
+`./gradlew :app:validateDebugScreenshotTest` ile doğrula.

@@ -143,22 +143,22 @@ private fun formatMoney(cents: Long): String =
     NumberFormat.getCurrencyInstance(Locale.forLanguageTag("tr-TR"))
         .format(BigDecimal.valueOf(cents, 2))
 
+internal fun sampleBudgetHomeUiState() = BudgetHomeUiState(
+    monthLabel = "Ekim 2026",
+    budgetCents = 3_000_000,
+    spentCents = 1_180_000,
+    categories = listOf(
+        CategorySpendingUi("Market", 420_000, 800_000),
+        CategorySpendingUi("Faturalar", 510_000, 650_000),
+        CategorySpendingUi("Ulaşım", 250_000, 400_000),
+    ),
+)
+
 @Preview(name = "Örnek bütçe", showBackground = true, widthDp = 393, heightDp = 852)
 @Composable
 private fun BudgetHomeWithSampleDataPreview() {
     BudgetTheme {
-        BudgetHomeScreen(
-            BudgetHomeUiState(
-                monthLabel = "Ekim 2026",
-                budgetCents = 3_000_000,
-                spentCents = 1_180_000,
-                categories = listOf(
-                    CategorySpendingUi("Market", 420_000, 800_000),
-                    CategorySpendingUi("Faturalar", 510_000, 650_000),
-                    CategorySpendingUi("Ulaşım", 250_000, 400_000),
-                ),
-            ),
-        )
+        BudgetHomeScreen(sampleBudgetHomeUiState())
     }
 }
 

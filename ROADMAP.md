@@ -9,16 +9,17 @@ içermez.
 
 Hesap açmadan ve internet bağlantısı olmadan çalışan bir Android bütçe uygulaması.
 Veriler yalnızca telefonda tutulur. Kullanıcı tek bir yedek dosyasını başka bir
-telefona taşıyıp uygulamadan geri yükleyebilir. Bilgisayarda ekranlar Android
-Studio Compose Preview ile, uygulamanın gerçek davranışı Android telefonda test
-edilir. Web uygulaması ve emülatör hedeflenmez.
+telefona taşıyıp uygulamadan geri yükleyebilir. Bilgisayarda ekranlar GitHub'da
+tarayıcıdan görüntülenebilir; Android Studio Compose Preview isteğe bağlıdır.
+Uygulamanın gerçek davranışı Android telefonda test edilir. Web uygulaması ve
+emülatör hedeflenmez.
 
 ## Aşamalar
 
 | No | Durum | İş | Bitti sayılma koşulu |
 | --- | --- | --- | --- |
 | 0 | Tamamlandı | Kararlar ve proje iskeleti | `com.hmagr.budgetapp`, Android 11 ve üzeri; debug APK başarıyla derlendi. |
-| 1 | Kullanıcı incelemesi bekliyor | İlk ekran ve bilgisayar ön izlemesi | İki Compose Preview derleniyor; kullanıcının Android Studio'da görüp tasarım geri bildirimi vermesi bekleniyor. |
+| 1 | Kullanıcı incelemesi bekliyor | İlk ekran ve bilgisayar ön izlemesi | İki Compose ekran görüntüsü GitHub'da tarayıcıdan açılıyor; kullanıcının tasarım geri bildirimi bekleniyor. |
 | 2 | Bekliyor | Aylık bütçe, kategoriler ve gelir/gider | Tutarlar kuruş cinsinden doğru hesaplanıyor; ilgili ekranlar çalışıyor. |
 | 3 | Bekliyor | Telefonda kalıcı kayıt | Room/SQLite kayıtları uygulama yeniden açıldığında duruyor. |
 | 4 | Bekliyor | Tek dosya yedek ve geri yükleme | Dosya doğrulanıyor; hatalı dosya veriyi değiştirmiyor; sağlam dosya temiz kurulumda kayıtları geri getiriyor. |
@@ -43,8 +44,13 @@ edilir. Web uygulaması ve emülatör hedeflenmez.
   Preview eklendi. `:app:assembleDebug` başarılı; APK kimliği, en eski sistem
   sürümü ve imzası doğrulandı. `:app:lintDebug` başarılı; Android 12+ sistem
   yedekleme kuralı ve geçici uygulama simgesi hakkında iki uyarı var.
-- Sıradaki iş: Kullanıcı Android Studio'da ön izlemeyi açıp tasarım geri
-  bildirimini verecek. Ön izleme bu bulut makinesinde görsel olarak açılmadı.
+- 2026-10-11: Kullanıcının tarayıcıdan daha kolay ön izleme isteği üzerine
+  Compose ekran görüntüsü testi eklendi. İki ekran gerçek Compose kodundan
+  üretildi ve görsel olarak kontrol edildi. `:app:validateDebugScreenshotTest`
+  ve eklenti eklendikten sonraki `:app:assembleDebug` başarılı. GitHub
+  README'sinde görseller açılabilir.
+- Sıradaki iş: Kullanıcı GitHub'daki görselleri inceleyip tasarım geri
+  bildirimini verecek.
 
 ## Karar bekleyen konular
 
