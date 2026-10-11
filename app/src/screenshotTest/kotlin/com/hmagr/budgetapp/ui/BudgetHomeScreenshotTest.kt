@@ -3,6 +3,7 @@ package com.hmagr.budgetapp.ui
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.tools.screenshot.PreviewTest
+import java.time.YearMonth
 
 @PreviewTest
 @Preview(name = "Örnek bütçe", showBackground = true, widthDp = 393, heightDp = 852)
@@ -18,6 +19,24 @@ fun BudgetHomeSampleScreenshot() {
 @Composable
 fun BudgetHomeEmptyScreenshot() {
     BudgetTheme {
-        BudgetHomeScreen(BudgetHomeUiState(monthLabel = "Ekim 2026"))
+        BudgetHomeScreen(BudgetHomeUiState(month = YearMonth.of(2026, 10)))
+    }
+}
+
+@PreviewTest
+@Preview(name = "Örnek gider bölümü", showBackground = true, widthDp = 393, heightDp = 852)
+@Composable
+fun BudgetHomeExpenseScreenshot() {
+    BudgetTheme {
+        BudgetHomeScreen(sampleBudgetHomeUiState(), initialPage = 2)
+    }
+}
+
+@PreviewTest
+@Preview(name = "Örnek yatırım bölümü", showBackground = true, widthDp = 393, heightDp = 852)
+@Composable
+fun BudgetHomeInvestmentScreenshot() {
+    BudgetTheme {
+        BudgetHomeScreen(sampleBudgetHomeUiState(), initialPage = 1)
     }
 }

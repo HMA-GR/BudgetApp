@@ -6,3 +6,9 @@ build/
 app/build/
 captures/
 .DS_Store
+*.budget
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.apk

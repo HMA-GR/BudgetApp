@@ -19,11 +19,11 @@ emülatör hedeflenmez.
 | No | Durum | İş | Bitti sayılma koşulu |
 | --- | --- | --- | --- |
 | 0 | Tamamlandı | Kararlar ve proje iskeleti | `com.hmagr.budgetapp`, Android 11 ve üzeri; debug APK başarıyla derlendi. |
-| 1 | Kullanıcı incelemesi bekliyor | İlk ekran ve bilgisayar ön izlemesi | İki Compose ekran görüntüsü GitHub'da tarayıcıdan açılıyor; kullanıcının tasarım geri bildirimi bekleniyor. |
-| 2 | Bekliyor | Aylık bütçe, kategoriler ve gelir/gider | Tutarlar kuruş cinsinden doğru hesaplanıyor; ilgili ekranlar çalışıyor. |
-| 3 | Bekliyor | Telefonda kalıcı kayıt | Room/SQLite kayıtları uygulama yeniden açıldığında duruyor. |
-| 4 | Bekliyor | Tek dosya yedek ve geri yükleme | Dosya doğrulanıyor; hatalı dosya veriyi değiştirmiyor; sağlam dosya temiz kurulumda kayıtları geri getiriyor. |
-| 5 | Bekliyor | GitHub otomasyonu ve APK | GitHub Actions test ve derlemeyi çalıştırıyor; indirilebilir debug APK üretiyor. |
+| 1 | Tamamlandı | İlk ekran ve bilgisayar ön izlemesi | İki Compose ekran görüntüsü GitHub'da tarayıcıdan açılıyor; kullanıcı ekran yerleşimine geri bildirim verdi. |
+| 2 | Devam ediyor | Aylık bütçe, ay seçimi, gelir/yatırım/gider bölümleri | Tutarlar kuruş cinsinden doğru hesaplanıyor; ilgili ekranlar çalışıyor. |
+| 3 | Kodlandı, telefon doğrulaması bekliyor | Telefonda kalıcı kayıt | SQLite kayıtları uygulama yeniden açıldığında duruyor. |
+| 4 | Kodlandı, telefon doğrulaması bekliyor | Tek dosya yedek ve geri yükleme | Dosya doğrulanıyor; hatalı dosya veriyi değiştirmiyor; sağlam dosya temiz kurulumda kayıtları geri getiriyor. |
+| 5 | Kodlandı, GitHub doğrulaması bekliyor | GitHub otomasyonu ve imzalı APK | GitHub Actions test ve derlemeyi çalıştırıyor; kullanıcının gizli anahtarıyla güncellenebilir APK üretiyor. |
 | 6 | Bekliyor | Gerçek telefon doğrulaması ve tasarım düzeltmeleri | Kullanıcı telefonda ve Compose Preview'da inceleyip onaylıyor. |
 
 ## Durum kaydı
@@ -49,25 +49,63 @@ emülatör hedeflenmez.
   üretildi ve görsel olarak kontrol edildi. `:app:validateDebugScreenshotTest`
   ve eklenti eklendikten sonraki `:app:assembleDebug` başarılı. GitHub
   README'sinde görseller açılabilir.
-- Sıradaki iş: Kullanıcı GitHub'daki görselleri inceleyip tasarım geri
-  bildirimini verecek.
+- 2026-10-12: Kullanıcı ilk görseli inceledi. Kalan üstte, Gelir ve Gider altta;
+  altında kaydırmalı Gelir/Yatırım/Gider bölümleri, en altta üç ekleme eylemi
+  ve geçmiş ay seçimi istedi. Görsel ince ayar sona bırakıldı. Aşama 1 bitti,
+  aşama 2 başladı. Kalan hesabı ve yatırım kaydının kapsamı soruldu.
+- 2026-10-12: Kullanıcı Kalan = Gelir − Gider − yatırıma ayrılan tutar
+  hesabını; yatırım için ay başına tek toplam güncel değer kaydını seçti.
+  Güncel değer Kalan hesabına katılmıyor. Otomatik Android yedekleme ve
+  cihazdan cihaza aktarımın kapalı kalmasını seçti.
+- 2026-10-12: Geçmiş ay seçicisi, kaydırılabilir üç bölüm ve üç ekleme
+  penceresi kodlandı. Gelir/gider/yatırım kayıtları ile yatırımın aylık
+  güncel değeri uygulamaya özel SQLite dosyasına yazılıyor. Tutar girişleri
+  kuruş cinsinden tutuluyor. Hesaplama için 2 JVM testi, Compose ekran
+  görüntüsü doğrulaması, debug APK derlemesi ve lint başarılı. Veritabanının
+  telefon yeniden başlatma/uygulama açma davranışı henüz gerçek cihazda
+  sınanmadı. Dört ekran görüntüsü görsel olarak incelendi.
+- 2026-10-12: Kullanıcı tek dosya yedeğin parolayla şifrelenmesini ve
+  doğrulanan dosyanın geri yüklemede mevcut kayıtların tamamının yerini
+  almasını seçti. Aşama 4 kodlaması başladı.
+- 2026-10-12: AES-GCM ve paroladan türetilmiş anahtarla şifreli tek dosya,
+  Android dosya seçicisiyle dışa/içe aktarma ve doğrulama sonrası tek
+  veritabanı işlemi içinde tam değiştirme kodlandı. Yanlış parola ve
+  değiştirilmiş dosyanın reddi dahil toplam 4 JVM testi; Compose ekran
+  görüntüsü doğrulaması, debug APK ve lint başarılı. Dosya seçicisi ve
+  veritabanı geri yüklemesi henüz telefonda sınanmadı. Dört tarayıcı
+  ön izlemesi tekrar üretildi ve görsel olarak kontrol edildi.
+- 2026-10-12: Kullanıcı güncellenebilir APK'yı seçti. GitHub Actions kontrol
+  iş akışı ve gizli anahtarla imzalı APK iş akışı eklendi; imza anahtarını
+  kullanıcının bilgisayarında oluşturması ve dört GitHub sırrına eklemesi
+  için yönerge yazıldı. Geçici bir test anahtarıyla release APK derlendi ve
+  Android v2 imzası doğrulandı; test anahtarı depoya konmadı. Gerçek imzalı
+  iş akışı GitHub'da henüz koşulmadı.
+- 2026-10-12: Bulut ortamında yeniden çalışma için JDK/SDK yollarını ve
+  doğrulama komutlarını içeren başlangıç yönergesi taslağı kaydedildi;
+  yayımlama kullanıcı ortam ayarlarında yapılacak.
+- Sıradaki iş: Kullanıcının GitHub imza sırlarını eklemesinden sonra iş
+  akışını ve telefonda kayıt/yedek/geri yüklemeyi doğrula. Kayıt
+  düzenleme/silme ve kategori ihtiyaçlarını da netleştir.
 
 ## Karar bekleyen konular
 
 - Kalıcı uygulama kimliği ve en eski Android sürümü: kullanıcı tarafından
   `com.hmagr.budgetapp` ve Android 11 olarak kararlaştırıldı.
 - Ekran tasarımı ve etkileşimler: ilk Compose Preview hazır olunca kullanıcıyla
-  birlikte netleştirilecek; nihai simge de buna dahil.
+  birlikte netleştirilecek; görsel ince ayar sona bırakıldı, nihai simge de
+  buna dahil.
+- Kalan hesabı, yatırımın aylık toplam güncel değeri ve Android otomatik
+  yedeklemesinin kapatılması: kullanıcı tarafından kararlaştırıldı.
 - Yedek dosyasının parola koruması ve içe aktarmanın mevcut veriye etkisi:
-  yedek aşamasına geçmeden önce kullanıcıyla kararlaştırılacak.
-- Android'in otomatik cihazdan cihaza veri taşıma davranışı: kişisel veri
-  depolanmadan önce kullanıcıyla kararlaştırılacak. Uygulama şu anda kişisel
-  veri saklamıyor.
+  parolayla şifreleme ve doğrulanmış tam değiştirme kararlaştırıldı.
+- Güncellenebilir APK: kullanıcı onayladı; özel anahtarın GitHub sırlarına
+  eklenmesi bekleniyor.
+- Gelir ve gider için kategorilerin kapsamı: kullanıcı yanıtı bekleniyor.
 
 ## Teknik yön
 
 - Android: Kotlin ve Jetpack Compose.
-- Yerel veri: Room/SQLite; parasal tutarlar kuruş cinsinden tam sayı.
+- Yerel veri: SQLite; parasal tutarlar kuruş cinsinden tam sayı.
 - Yedek: sürüm bilgisi bulunan tek dosya; Android dosya seçicisiyle dışa/içe
   aktarma; içe aktarma öncesi doğrulama ve bütünlüklü geri yükleme.
 - GitHub: kaynak kodu ve plan; ileride test/derleme ve indirilebilir APK.

@@ -5,6 +5,17 @@ plugins {
     id("com.android.compose.screenshot")
 }
 
+val releaseKeystoreFile = providers.environmentVariable("BUDGET_KEYSTORE_FILE").orNull
+val releaseKeystorePassword = providers.environmentVariable("BUDGET_KEYSTORE_PASSWORD").orNull
+val releaseKeyAlias = providers.environmentVariable("BUDGET_KEY_ALIAS").orNull
+val releaseKeyPassword = providers.environmentVariable("BUDGET_KEY_PASSWORD").orNull
+val releaseSigningConfigured = listOf(
+    releaseKeystoreFile,
+    releaseKeystorePassword,
+    releaseKeyAlias,
+    releaseKeyPassword,
+).all { !it.isNullOrBlank() }
+
 android {
     namespace = "com.hmagr.budgetapp"
     compileSdk = 36
@@ -13,8 +24,24 @@ android {
         applicationId = "com.hmagr.budgetapp"
         minSdk = 30
         targetSdk = 36
-        versionCode = 1
+        versionCode = providers.environmentVariable("BUDGET_VERSION_CODE").orNull?.toIntOrNull() ?: 1
         versionName = "0.1.0"
+    }
+
+    if (releaseSigningConfigured) {
+        signingConfigs {
+            create("budgetRelease") {
+                storeFile = file(requireNotNull(releaseKeystoreFile))
+                storePassword = releaseKeystorePassword
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
+            }
+        }
+        buildTypes {
+            getByName("release") {
+                signingConfig = signingConfigs.getByName("budgetRelease")
+            }
+        }
     }
 
     buildFeatures {
@@ -43,4 +70,5 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     debugImplementation("androidx.compose.ui:ui-tooling")
     screenshotTestImplementation("com.android.tools.screenshot:screenshot-validation-api:0.0.1-alpha16")
+    testImplementation("junit:junit:4.13.2")
 }

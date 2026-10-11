@@ -1,23 +1,35 @@
 # BudgetApp
 
-Hesap gerektirmeyen, Android için yerel bütçe uygulaması. Proje şu anda **ilk
-ekran ön izlemesi** aşamasında: aylık bütçe kaydetme ve yedekleme henüz
-uygulanmadı. Güncel aşamalar ve alınmış kararlar [ROADMAP.md](ROADMAP.md)
-dosyasında tutulur.
+Hesap gerektirmeyen, Android için yerel bütçe uygulaması. Gelir, gider ve
+yatırıma ayrılan tutarlar aylara göre telefonun yerel SQLite veritabanına
+kaydedilir. **Kalan = gelir − gider − yatırıma ayrılan tutar.** Yatırımların
+aylık toplam güncel değeri ayrıca girilir ve Kalan hesabını değiştirmez.
+Otomatik Android yedekleme ve cihazdan cihaza aktarım kapalıdır. Üstteki
+**Yedek** düğmesiyle en az sekiz karakterlik parola kullanarak şifreli tek
+dosya oluşturulabilir. Geri yükleme dosyayı ve parolayı doğruladıktan sonra
+mevcut kayıtların tamamını değiştirir. Bu akış gerçek telefonda henüz
+denenmediği için geliştirme sürümüne önemli kişisel veriler girilmemelidir.
+Güncel aşamalar ve kararlar [ROADMAP.md](ROADMAP.md) dosyasındadır.
 
 ## Tarayıcıdan ekran ön izlemesi
 
-Android Studio kurmadan GitHub'da şu iki ekranı açabilirsin:
+Android Studio kurmadan GitHub'da şu dört ekranı açabilirsin:
 
 - [Örnek bütçe ekranı](docs/previews/sample-budget.png)
+- [Yatırım bölümü](docs/previews/investment-budget.png)
+- [Gider bölümü](docs/previews/expense-budget.png)
 - [Boş bütçe ekranı](docs/previews/empty-budget.png)
 
 <a href="docs/previews/sample-budget.png"><img src="docs/previews/sample-budget.png" alt="Örnek bütçe ekranı" width="280"></a>
+<a href="docs/previews/investment-budget.png"><img src="docs/previews/investment-budget.png" alt="Yatırım bölümü" width="280"></a>
+<a href="docs/previews/expense-budget.png"><img src="docs/previews/expense-budget.png" alt="Gider bölümü" width="280"></a>
 <a href="docs/previews/empty-budget.png"><img src="docs/previews/empty-budget.png" alt="Boş bütçe ekranı" width="280"></a>
 
 Bu görüntüler Android uygulamasının Compose ekranından üretilir. Yalnızca
 görsel ön izlemedir; tıklanabilir uygulama veya web uygulaması değildir.
-Örnek rakamlar telefona kaydedilmez.
+Örnek rakamlar telefona kaydedilmez. Gerçek APK'da aya dokunarak geçmiş ayı
+seçebilir, bölümleri sağa sola kaydırabilir ve alttaki düğmelerle kayıt
+ekleyebilirsin.
 
 ## Android Studio ile canlı ekran ön izlemesi (isteğe bağlı)
 
@@ -30,7 +42,7 @@ görsel ön izlemedir; tıklanabilir uygulama veya web uygulaması değildir.
 4. `app/src/main/java/com/hmagr/budgetapp/ui/BudgetHomeScreen.kt` dosyasını
    aç. Editörün **Split** veya **Design** görünümünden **Preview** panelini
    açıp **Build & Refresh** düğmesine bas.
-5. **Örnek bütçe** ve **Boş bütçe** adlı iki ekran görünür. Örnek bütçedeki
+5. **Örnek bütçe** ve **Boş bütçe** adlı ekranlar görünür. Örnek bütçedeki
    rakamlar yalnızca tasarımı göstermek içindir; telefona kaydedilmez.
 
 Android Studio uygun bir JDK'yı kendisi sunar. Komut satırından derleme için
@@ -43,8 +55,18 @@ satırında macOS/Linux için `./gradlew :app:assembleDebug`, Windows için
 `gradlew.bat :app:assembleDebug` çalıştır. Debug APK şu dosyada oluşur:
 `app/build/outputs/apk/debug/app-debug.apk`.
 
-Bu ilk APK boş ekran düzenini açar. Gerçek bütçe, kayıt ve yedekleme
-işlevleri yol haritasının sonraki aşamalarında eklenecek.
+Bu geliştirme APK'sında ay seçimi, gelir/yatırım/gider kaydı, yatırımın
+aylık güncel değerini girme ve şifreli dosyayı dışa/içe aktarma kodlandı.
+Uygulamayı kapatıp açma ve dosyayı başka telefona taşıma akışları gerçek
+Android cihazda henüz doğrulanmadı.
+
+## Güncellenebilir APK
+
+GitHub'da otomatik test/derleme ve aynı anahtarla imzalı APK üreten iş
+akışları hazırlandı. APK'nın her sürümde aynı uygulamanın üzerine kurulması
+için anahtarı kendi bilgisayarında oluşturup GitHub sırlarına eklemelisin.
+Adımlar [imza anahtarı yönergesinde](docs/SIGNING.md). Gerçek anahtar Git
+deposuna konmaz; sırlar eklenene kadar imzalı APK iş akışı tamamlanamaz.
 
 ## Ekran görüntülerini yenileme
 
