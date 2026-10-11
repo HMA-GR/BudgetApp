@@ -29,15 +29,22 @@ edilir. Web uygulaması ve emülatör hedeflenmez.
 
 - 2026-10-11: Depoda yalnızca `README.md` ve ilk Git commit'i vardı.
 - 2026-10-11: Yol haritası depoya eklendi. Aşama 0 başladı.
-- Sıradaki iş: Uygulama kimliği ile en eski Android sürümü yanıtını almak;
-  ardından proje iskeletini oluşturup derlemek.
+- 2026-10-11: GitHub'da `codex/android-setup` dalına ilk plan commit'i
+  gönderildi. Bulut ortamına Android SDK 35 ve Gradle 8.13 doğrulanmış
+  indirmelerle kuruldu. Uygulama kodu henüz eklenmedi.
+- 2026-10-11: Kullanıcı telefonunun Samsung S22 ve Android 16 olduğunu
+  bildirdi. Gradle çalıştırıcısı oluşturuldu; APK kimliği ve desteklenecek
+  en eski Android sürümü için kullanıcı kararı bekleniyor.
+- Sıradaki iş: Bu iki karardan sonra Android uygulama modülünü oluşturup
+  derlemek.
 
 ## Karar bekleyen konular
 
 - Kalıcı uygulama kimliği: kullanıcı yanıtı bekleniyor. Bu kimlik APK
   güncellemelerinde ve telefondaki verilerin korunmasında önemlidir.
-- En eski Android sürümü: kullanıcının telefon modeli veya Android sürümü
-  bekleniyor.
+- En eski desteklenen Android sürümü: Samsung S22 / Android 16 bilgisi alındı;
+  daha eski telefonların desteklenip desteklenmeyeceği kullanıcı yanıtını
+  bekliyor.
 - Ekran tasarımı ve etkileşimler: ilk Compose Preview hazır olunca kullanıcıyla
   birlikte netleştirilecek.
 - Yedek dosyasının parola koruması ve içe aktarmanın mevcut veriye etkisi:
