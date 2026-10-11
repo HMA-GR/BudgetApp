@@ -1,6 +1,7 @@
 package com.hmagr.budgetapp.ui
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.PrimaryTabRow
@@ -50,6 +53,13 @@ data class BudgetEntryUi(
     val title: String,
     val amountCents: Long,
     val type: EntryType,
+    val categoryName: String? = null,
+)
+
+data class BudgetCategoryUi(
+    val id: Long,
+    val type: EntryType,
+    val name: String,
 )
 
 data class BudgetHomeUiState(
@@ -60,13 +70,16 @@ data class BudgetHomeUiState(
     val expenseCents: Long = 0,
     val investmentValueCents: Long? = null,
     val entries: List<BudgetEntryUi> = emptyList(),
+    val categories: List<BudgetCategoryUi> = emptyList(),
 )
 
 @Composable
 fun BudgetHomeScreen(
     state: BudgetHomeUiState,
     onMonthSelected: (YearMonth) -> Unit = {},
-    onAddEntry: (EntryType, String, Long) -> Unit = { _, _, _ -> },
+    onAddEntry: (EntryType, String, Long, Long?) -> Unit = { _, _, _, _ -> },
+    onAddCategory: (EntryType, String) -> Unit = { _, _ -> },
+    onRenameCategory: (Long, String) -> Unit = { _, _ -> },
     onSaveInvestmentValue: (Long) -> Unit = {},
     onOpenBackup: () -> Unit = {},
     initialPage: Int = 0,
@@ -76,6 +89,7 @@ fun BudgetHomeScreen(
     val scope = rememberCoroutineScope()
     var monthPickerOpen by remember { mutableStateOf(false) }
     var addType by remember { mutableStateOf<EntryType?>(null) }
+    var categoryType by remember { mutableStateOf<EntryType?>(null) }
     var valueDialogOpen by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -129,6 +143,7 @@ fun BudgetHomeScreen(
                     state.investmentCents,
                     state.investmentValueCents,
                     onEditInvestmentValue = { valueDialogOpen = true },
+                    onManageCategories = { categoryType = types[page] },
                 )
             }
         }
@@ -147,11 +162,21 @@ fun BudgetHomeScreen(
         AddEntryDialog(
             type = type,
             month = state.month,
+            categories = state.categories.filter { it.type == type },
             onDismiss = { addType = null },
-            onAdd = { title, cents ->
-                onAddEntry(type, title, cents)
+            onAdd = { title, cents, selectedCategoryId ->
+                onAddEntry(type, title, cents, selectedCategoryId)
                 addType = null
             },
+        )
+    }
+    categoryType?.let { type ->
+        CategoryManagerDialog(
+            type = type,
+            categories = state.categories.filter { it.type == type },
+            onDismiss = { categoryType = null },
+            onAdd = { onAddCategory(type, it) },
+            onRename = onRenameCategory,
         )
     }
     if (valueDialogOpen) {
@@ -202,12 +227,18 @@ private fun EntryPage(
     investmentCents: Long,
     investmentValueCents: Long?,
     onEditInvestmentValue: () -> Unit,
+    onManageCategories: () -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(20.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
+        if (type != EntryType.INVESTMENT) {
+            item {
+                TextButton(onClick = onManageCategories) { Text(type.label + " kategorilerini yönet") }
+            }
+        }
         if (type == EntryType.INVESTMENT) {
             item {
                 Card(modifier = Modifier.fillMaxWidth()) {
@@ -243,7 +274,12 @@ private fun EntryPage(
                         modifier = Modifier.fillMaxWidth().padding(16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        Text(entry.title, style = MaterialTheme.typography.titleMedium)
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(entry.title, style = MaterialTheme.typography.titleMedium)
+                            entry.categoryName?.let {
+                                Text(it, style = MaterialTheme.typography.bodySmall)
+                            }
+                        }
                         Text(formatMoney(entry.amountCents), style = MaterialTheme.typography.bodyLarge)
                     }
                 }
@@ -330,11 +366,14 @@ private fun MonthPickerDialog(
 private fun AddEntryDialog(
     type: EntryType,
     month: YearMonth,
+    categories: List<BudgetCategoryUi>,
     onDismiss: () -> Unit,
-    onAdd: (String, Long) -> Unit,
+    onAdd: (String, Long, Long?) -> Unit,
 ) {
     var title by remember(type) { mutableStateOf("") }
     var amount by remember(type) { mutableStateOf("") }
+    var selectedCategoryId by remember(type) { mutableStateOf<Long?>(null) }
+    var categoryMenuOpen by remember { mutableStateOf(false) }
     val cents = parseMoney(amount)
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -348,6 +387,38 @@ private fun AddEntryDialog(
                     label = { Text("Açıklama") },
                     singleLine = true,
                 )
+                if (type != EntryType.INVESTMENT) {
+                    Box {
+                        TextButton(onClick = { categoryMenuOpen = true }) {
+                            Text(
+                                "Kategori: " +
+                                    (categories.firstOrNull { it.id == selectedCategoryId }?.name ?: "Kategorisiz") +
+                                    "  ▾",
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = categoryMenuOpen,
+                            onDismissRequest = { categoryMenuOpen = false },
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("Kategorisiz") },
+                                onClick = {
+                                    selectedCategoryId = null
+                                    categoryMenuOpen = false
+                                },
+                            )
+                            categories.forEach { category ->
+                                DropdownMenuItem(
+                                    text = { Text(category.name) },
+                                    onClick = {
+                                        selectedCategoryId = category.id
+                                        categoryMenuOpen = false
+                                    },
+                                )
+                            }
+                        }
+                    }
+                }
                 OutlinedTextField(
                     value = amount,
                     onValueChange = { amount = it },
@@ -363,7 +434,7 @@ private fun AddEntryDialog(
         },
         confirmButton = {
             TextButton(
-                onClick = { cents?.let { onAdd(title.trim(), it) } },
+                onClick = { cents?.let { onAdd(title.trim(), it, selectedCategoryId) } },
                 enabled = title.isNotBlank() && cents != null,
             ) { Text("Ekle") }
         },
@@ -395,11 +466,17 @@ internal fun sampleBudgetHomeUiState() = BudgetHomeUiState(
     expenseCents = 1_180_000,
     investmentValueCents = 530_000,
     entries = listOf(
-        BudgetEntryUi("Maaş", 3_000_000, EntryType.INCOME),
+        BudgetEntryUi("Maaş", 3_000_000, EntryType.INCOME, "İş"),
         BudgetEntryUi("Birikim", 500_000, EntryType.INVESTMENT),
-        BudgetEntryUi("Market", 420_000, EntryType.EXPENSE),
-        BudgetEntryUi("Faturalar", 510_000, EntryType.EXPENSE),
-        BudgetEntryUi("Ulaşım", 250_000, EntryType.EXPENSE),
+        BudgetEntryUi("Market", 420_000, EntryType.EXPENSE, "Gıda"),
+        BudgetEntryUi("Faturalar", 510_000, EntryType.EXPENSE, "Ev"),
+        BudgetEntryUi("Ulaşım", 250_000, EntryType.EXPENSE, "Ulaşım"),
+    ),
+    categories = listOf(
+        BudgetCategoryUi(1, EntryType.INCOME, "İş"),
+        BudgetCategoryUi(2, EntryType.EXPENSE, "Gıda"),
+        BudgetCategoryUi(3, EntryType.EXPENSE, "Ev"),
+        BudgetCategoryUi(4, EntryType.EXPENSE, "Ulaşım"),
     ),
 )
 

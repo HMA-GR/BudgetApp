@@ -20,7 +20,7 @@ emülatör hedeflenmez.
 | --- | --- | --- | --- |
 | 0 | Tamamlandı | Kararlar ve proje iskeleti | `com.hmagr.budgetapp`, Android 11 ve üzeri; debug APK başarıyla derlendi. |
 | 1 | Tamamlandı | İlk ekran ve bilgisayar ön izlemesi | İki Compose ekran görüntüsü GitHub'da tarayıcıdan açılıyor; kullanıcı ekran yerleşimine geri bildirim verdi. |
-| 2 | Devam ediyor | Aylık bütçe, ay seçimi, gelir/yatırım/gider bölümleri | Tutarlar kuruş cinsinden doğru hesaplanıyor; ilgili ekranlar çalışıyor. |
+| 2 | Kodlandı, telefon doğrulaması bekliyor | Aylık bütçe, ay seçimi, gelir/yatırım/gider ve kategoriler | Tutarlar kuruş cinsinden doğru hesaplanıyor; ilgili ekranlar çalışıyor. |
 | 3 | Kodlandı, telefon doğrulaması bekliyor | Telefonda kalıcı kayıt | SQLite kayıtları uygulama yeniden açıldığında duruyor. |
 | 4 | Kodlandı, telefon doğrulaması bekliyor | Tek dosya yedek ve geri yükleme | Dosya doğrulanıyor; hatalı dosya veriyi değiştirmiyor; sağlam dosya temiz kurulumda kayıtları geri getiriyor. |
 | 5 | Kodlandı, GitHub doğrulaması bekliyor | GitHub otomasyonu ve imzalı APK | GitHub Actions test ve derlemeyi çalıştırıyor; kullanıcının gizli anahtarıyla güncellenebilir APK üretiyor. |
@@ -83,9 +83,24 @@ emülatör hedeflenmez.
 - 2026-10-12: Bulut ortamında yeniden çalışma için JDK/SDK yollarını ve
   doğrulama komutlarını içeren başlangıç yönergesi taslağı kaydedildi;
   yayımlama kullanıcı ortam ayarlarında yapılacak.
+- 2026-10-12: Kullanıcı gelir ve gider için kendi kategorilerini ekleyip
+  düzenlemek istedi. Kategorilerin tüm aylarda ortak mı yoksa her ay ayrı
+  mı olacağı soruldu; yanıt gelene kadar geri alınabilir ekran hazırlığı
+  yapılacak.
+- 2026-10-12: Kullanıcı gelir ve gider kategorilerinin tüm aylarda ortak
+  olmasını seçti. Kategori adını değiştirmek geçmiş kayıtlarda da yeni adı
+  gösterecek. Mevcut kategorisiz kayıtlar korunarak veritabanı ve şifreli
+  yedek sürümü yükseltilecek.
+- 2026-10-12: Kategori ekleme ve yeniden adlandırma kodlandı; gelir/gider
+  kayıtlarına isteğe bağlı kategori bağlandı. SQLite sürüm 1'den 2'ye geçiş
+  eski kayıtları koruyacak şekilde yazıldı ve SQL üzerinde sınandı. Şifreli
+  yedek biçimi sürüm 2 oldu; önceki sürüm 1 örnek dosyasının açılması ve
+  kategori ilişkilerinin doğrulanması dahil 6 JVM testi geçti. Compose
+  ekran görüntüsü doğrulaması, debug APK ve lint başarılı. Beş tarayıcı
+  görseli üretildi ve incelendi. Gerçek telefonda yükseltme henüz sınanmadı.
 - Sıradaki iş: Kullanıcının GitHub imza sırlarını eklemesinden sonra iş
   akışını ve telefonda kayıt/yedek/geri yüklemeyi doğrula. Kayıt
-  düzenleme/silme ve kategori ihtiyaçlarını da netleştir.
+  düzenleme/silme ihtiyacını netleştir.
 
 ## Karar bekleyen konular
 
@@ -100,7 +115,8 @@ emülatör hedeflenmez.
   parolayla şifreleme ve doğrulanmış tam değiştirme kararlaştırıldı.
 - Güncellenebilir APK: kullanıcı onayladı; özel anahtarın GitHub sırlarına
   eklenmesi bekleniyor.
-- Gelir ve gider için kategorilerin kapsamı: kullanıcı yanıtı bekleniyor.
+- Gelir ve gider kategorilerini kullanıcı oluşturup düzenleyecek; bunlar
+  bütün aylarda ortak olacak. Kullanıcı tarafından kararlaştırıldı.
 
 ## Teknik yön
 

@@ -4,6 +4,8 @@ Hesap gerektirmeyen, Android için yerel bütçe uygulaması. Gelir, gider ve
 yatırıma ayrılan tutarlar aylara göre telefonun yerel SQLite veritabanına
 kaydedilir. **Kalan = gelir − gider − yatırıma ayrılan tutar.** Yatırımların
 aylık toplam güncel değeri ayrıca girilir ve Kalan hesabını değiştirmez.
+Gelir ve gider kategorilerini kendin oluşturup yeniden adlandırabilirsin;
+kategoriler tüm aylarda ortaktır. Ad değişikliği eski kayıtlara da yansır.
 Otomatik Android yedekleme ve cihazdan cihaza aktarım kapalıdır. Üstteki
 **Yedek** düğmesiyle en az sekiz karakterlik parola kullanarak şifreli tek
 dosya oluşturulabilir. Geri yükleme dosyayı ve parolayı doğruladıktan sonra
@@ -13,16 +15,18 @@ Güncel aşamalar ve kararlar [ROADMAP.md](ROADMAP.md) dosyasındadır.
 
 ## Tarayıcıdan ekran ön izlemesi
 
-Android Studio kurmadan GitHub'da şu dört ekranı açabilirsin:
+Android Studio kurmadan GitHub'da şu beş görüntüyü açabilirsin:
 
 - [Örnek bütçe ekranı](docs/previews/sample-budget.png)
 - [Yatırım bölümü](docs/previews/investment-budget.png)
 - [Gider bölümü](docs/previews/expense-budget.png)
+- [Gider kategorilerini yönetme](docs/previews/category-manager.png)
 - [Boş bütçe ekranı](docs/previews/empty-budget.png)
 
 <a href="docs/previews/sample-budget.png"><img src="docs/previews/sample-budget.png" alt="Örnek bütçe ekranı" width="280"></a>
 <a href="docs/previews/investment-budget.png"><img src="docs/previews/investment-budget.png" alt="Yatırım bölümü" width="280"></a>
 <a href="docs/previews/expense-budget.png"><img src="docs/previews/expense-budget.png" alt="Gider bölümü" width="280"></a>
+<a href="docs/previews/category-manager.png"><img src="docs/previews/category-manager.png" alt="Gider kategorilerini yönetme" width="280"></a>
 <a href="docs/previews/empty-budget.png"><img src="docs/previews/empty-budget.png" alt="Boş bütçe ekranı" width="280"></a>
 
 Bu görüntüler Android uygulamasının Compose ekranından üretilir. Yalnızca
@@ -30,6 +34,9 @@ görsel ön izlemedir; tıklanabilir uygulama veya web uygulaması değildir.
 Örnek rakamlar telefona kaydedilmez. Gerçek APK'da aya dokunarak geçmiş ayı
 seçebilir, bölümleri sağa sola kaydırabilir ve alttaki düğmelerle kayıt
 ekleyebilirsin.
+Gelir ve Gider bölümlerindeki **kategorilerini yönet** düğmesiyle kategori
+ekleyebilir veya adını değiştirebilirsin. Yeni kayıtta kategoriyi seçebilirsin.
+Eski kategorisiz kayıtlar korunur; önceki şifreli yedekler açılabilir.
 
 ## Android Studio ile canlı ekran ön izlemesi (isteğe bağlı)
 

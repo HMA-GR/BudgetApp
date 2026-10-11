@@ -23,6 +23,7 @@ import com.hmagr.budgetapp.ui.BackupActionDialog
 import com.hmagr.budgetapp.ui.BackupPasswordDialog
 import com.hmagr.budgetapp.ui.BackupPasswordMode
 import com.hmagr.budgetapp.ui.BudgetEntryUi
+import com.hmagr.budgetapp.ui.BudgetCategoryUi
 import com.hmagr.budgetapp.ui.BudgetHomeScreen
 import com.hmagr.budgetapp.ui.BudgetHomeUiState
 import com.hmagr.budgetapp.ui.BudgetTheme
@@ -37,6 +38,7 @@ private data class LoadedMonth(
     val month: YearMonth,
     val entries: List<BudgetEntryUi>,
     val investmentValueCents: Long?,
+    val categories: List<BudgetCategoryUi>,
 )
 
 class MainActivity : ComponentActivity() {
@@ -102,6 +104,7 @@ class MainActivity : ComponentActivity() {
                             month = month,
                             entries = database.value.entriesForMonth(month),
                             investmentValueCents = database.value.investmentValueForMonth(month),
+                            categories = database.value.categories(),
                         )
                     }
                 }
@@ -118,18 +121,39 @@ class MainActivity : ComponentActivity() {
                         expenseCents = totals.expenseCents,
                         investmentValueCents = current?.investmentValueCents,
                         entries = entries,
+                        categories = current?.categories.orEmpty(),
                     ),
                     onMonthSelected = { monthText = it.toString() },
-                    onAddEntry = { type, title, cents ->
+                    onAddEntry = { type, title, cents, categoryId ->
                         val targetMonth = month
                         scope.launch {
                             try {
                                 withContext(Dispatchers.IO) {
-                                    database.value.addEntry(targetMonth, type, title, cents)
+                                    database.value.addEntry(targetMonth, type, title, cents, categoryId)
                                 }
                                 revision++
                             } catch (error: Exception) {
                                 Toast.makeText(this@MainActivity, "Kayıt yapılamadı", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    },
+                    onAddCategory = { type, name ->
+                        scope.launch {
+                            try {
+                                withContext(Dispatchers.IO) { database.value.addCategory(type, name) }
+                                revision++
+                            } catch (error: Exception) {
+                                Toast.makeText(this@MainActivity, "Kategori eklenemedi", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    },
+                    onRenameCategory = { id, name ->
+                        scope.launch {
+                            try {
+                                withContext(Dispatchers.IO) { database.value.renameCategory(id, name) }
+                                revision++
+                            } catch (error: Exception) {
+                                Toast.makeText(this@MainActivity, "Kategori güncellenemedi", Toast.LENGTH_SHORT).show()
                             }
                         }
                     },

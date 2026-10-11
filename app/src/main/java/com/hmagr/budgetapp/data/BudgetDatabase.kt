@@ -5,14 +5,20 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.hmagr.budgetapp.ui.BudgetEntryUi
+import com.hmagr.budgetapp.ui.BudgetCategoryUi
 import com.hmagr.budgetapp.ui.EntryType
 import java.time.YearMonth
+import java.util.Locale
 
 /**
  * Kayıtlar yalnızca telefonun uygulamaya özel SQLite dosyasında tutulur.
  * Kişisel tutarlar hiçbir zaman örnek ekran görüntülerine veya Git deposuna yazılmaz.
  */
-class BudgetDatabase(context: Context) : SQLiteOpenHelper(context, "budget.db", null, 1) {
+class BudgetDatabase(context: Context) : SQLiteOpenHelper(context, "budget.db", null, 2) {
+    override fun onConfigure(db: SQLiteDatabase) {
+        db.setForeignKeyConstraintsEnabled(true)
+    }
+
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
             """
@@ -34,44 +40,127 @@ class BudgetDatabase(context: Context) : SQLiteOpenHelper(context, "budget.db", 
             )
             """.trimIndent(),
         )
+        addCategorySchema(db)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        error("Henüz şema geçişi yok: $oldVersion -> $newVersion")
+        if (oldVersion == 1 && newVersion == 2) {
+            addCategorySchema(db)
+        } else {
+            error("Desteklenmeyen şema geçişi: $oldVersion -> $newVersion")
+        }
     }
 
-    fun addEntry(month: YearMonth, type: EntryType, title: String, amountCents: Long) {
+    private fun addCategorySchema(db: SQLiteDatabase) {
+        db.execSQL(
+            """
+            CREATE TABLE categories (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                type TEXT NOT NULL CHECK(type IN ('INCOME', 'EXPENSE')),
+                name TEXT NOT NULL,
+                name_key TEXT NOT NULL,
+                UNIQUE(type, name_key)
+            )
+            """.trimIndent(),
+        )
+        db.execSQL(
+            "ALTER TABLE entries ADD COLUMN category_id INTEGER REFERENCES categories(id) ON DELETE SET NULL",
+        )
+    }
+
+    fun addEntry(
+        month: YearMonth,
+        type: EntryType,
+        title: String,
+        amountCents: Long,
+        categoryId: Long? = null,
+    ) {
         require(title.isNotBlank() && title.length <= 200 && amountCents > 0)
+        if (categoryId != null) require(categoryType(categoryId) == type)
         val values = ContentValues().apply {
             put("month", month.toString())
             put("type", type.name)
             put("title", title.trim())
             put("amount_cents", amountCents)
+            if (categoryId != null) put("category_id", categoryId)
         }
         check(writableDatabase.insertOrThrow("entries", null, values) != -1L)
     }
 
     fun entriesForMonth(month: YearMonth): List<BudgetEntryUi> {
         val entries = mutableListOf<BudgetEntryUi>()
-        readableDatabase.query(
-            "entries",
-            arrayOf("title", "amount_cents", "type"),
-            "month = ?",
+        readableDatabase.rawQuery(
+            """
+            SELECT e.title, e.amount_cents, e.type, c.name
+            FROM entries e LEFT JOIN categories c ON c.id = e.category_id
+            WHERE e.month = ? ORDER BY e.id DESC
+            """.trimIndent(),
             arrayOf(month.toString()),
-            null,
-            null,
-            "id DESC",
         ).use { cursor ->
             while (cursor.moveToNext()) {
                 entries += BudgetEntryUi(
                     title = cursor.getString(0),
                     amountCents = cursor.getLong(1),
                     type = EntryType.valueOf(cursor.getString(2)),
+                    categoryName = if (cursor.isNull(3)) null else cursor.getString(3),
                 )
             }
         }
         return entries
     }
+
+    fun categories(): List<BudgetCategoryUi> {
+        val categories = mutableListOf<BudgetCategoryUi>()
+        readableDatabase.query(
+            "categories",
+            arrayOf("id", "type", "name"),
+            null, null, null, null, "type, name",
+        ).use { cursor ->
+            while (cursor.moveToNext()) {
+                categories += BudgetCategoryUi(
+                    id = cursor.getLong(0),
+                    type = EntryType.valueOf(cursor.getString(1)),
+                    name = cursor.getString(2),
+                )
+            }
+        }
+        return categories
+    }
+
+    fun addCategory(type: EntryType, name: String) {
+        require(type != EntryType.INVESTMENT)
+        val cleaned = name.trim()
+        require(cleaned.isNotEmpty() && cleaned.length <= 80)
+        writableDatabase.insertOrThrow("categories", null, ContentValues().apply {
+            put("type", type.name)
+            put("name", cleaned)
+            put("name_key", categoryKey(cleaned))
+        })
+    }
+
+    fun renameCategory(id: Long, name: String) {
+        val cleaned = name.trim()
+        require(cleaned.isNotEmpty() && cleaned.length <= 80)
+        check(writableDatabase.update(
+            "categories",
+            ContentValues().apply {
+                put("name", cleaned)
+                put("name_key", categoryKey(cleaned))
+            },
+            "id = ?",
+            arrayOf(id.toString()),
+        ) == 1)
+    }
+
+    private fun categoryType(id: Long): EntryType? =
+        readableDatabase.query(
+            "categories", arrayOf("type"), "id = ?", arrayOf(id.toString()), null, null, null,
+        ).use { cursor ->
+            if (cursor.moveToFirst()) EntryType.valueOf(cursor.getString(0)) else null
+        }
+
+    private fun categoryKey(name: String): String =
+        name.lowercase(Locale.forLanguageTag("tr-TR"))
 
     fun investmentValueForMonth(month: YearMonth): Long? =
         readableDatabase.query(
@@ -102,10 +191,24 @@ class BudgetDatabase(context: Context) : SQLiteOpenHelper(context, "budget.db", 
         val db = writableDatabase
         db.beginTransaction()
         try {
+            val categories = mutableListOf<SavedCategory>()
+            db.query(
+                "categories",
+                arrayOf("id", "type", "name"),
+                null, null, null, null, "id ASC",
+            ).use { cursor ->
+                while (cursor.moveToNext()) {
+                    categories += SavedCategory(
+                        cursor.getLong(0),
+                        EntryType.valueOf(cursor.getString(1)),
+                        cursor.getString(2),
+                    )
+                }
+            }
             val entries = mutableListOf<SavedEntry>()
             db.query(
                 "entries",
-                arrayOf("month", "type", "title", "amount_cents"),
+                arrayOf("month", "type", "title", "amount_cents", "category_id"),
                 null, null, null, null, "id ASC",
             ).use { cursor ->
                 while (cursor.moveToNext()) {
@@ -114,6 +217,7 @@ class BudgetDatabase(context: Context) : SQLiteOpenHelper(context, "budget.db", 
                         EntryType.valueOf(cursor.getString(1)),
                         cursor.getString(2),
                         cursor.getLong(3),
+                        if (cursor.isNull(4)) null else cursor.getLong(4),
                     )
                 }
             }
@@ -131,7 +235,7 @@ class BudgetDatabase(context: Context) : SQLiteOpenHelper(context, "budget.db", 
                 }
             }
             db.setTransactionSuccessful()
-            return BudgetSnapshot(entries, values)
+            return BudgetSnapshot(entries, values, categories)
         } finally {
             db.endTransaction()
         }
@@ -144,12 +248,22 @@ class BudgetDatabase(context: Context) : SQLiteOpenHelper(context, "budget.db", 
         try {
             db.delete("entries", null, null)
             db.delete("investment_values", null, null)
+            db.delete("categories", null, null)
+            snapshot.categories.forEach { category ->
+                db.insertOrThrow("categories", null, ContentValues().apply {
+                    put("id", category.id)
+                    put("type", category.type.name)
+                    put("name", category.name)
+                    put("name_key", categoryKey(category.name))
+                })
+            }
             snapshot.entries.forEach { entry ->
                 db.insertOrThrow("entries", null, ContentValues().apply {
                     put("month", entry.month.toString())
                     put("type", entry.type.name)
                     put("title", entry.title)
                     put("amount_cents", entry.amountCents)
+                    if (entry.categoryId != null) put("category_id", entry.categoryId)
                 })
             }
             snapshot.investmentValues.forEach { value ->
