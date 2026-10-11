@@ -17,8 +17,8 @@ edilir. Web uygulaması ve emülatör hedeflenmez.
 
 | No | Durum | İş | Bitti sayılma koşulu |
 | --- | --- | --- | --- |
-| 0 | Devam ediyor | Kararlar ve proje iskeleti | Uygulama kimliği ve desteklenecek Android sürümü kullanıcıyla kararlaştırıldı; Android projesi derleniyor. |
-| 1 | Bekliyor | İlk ekran ve bilgisayar ön izlemesi | Ana ekran Android Studio Compose Preview içinde açılıyor; kullanıcı tasarımı inceleyebiliyor. |
+| 0 | Tamamlandı | Kararlar ve proje iskeleti | `com.hmagr.budgetapp`, Android 11 ve üzeri; debug APK başarıyla derlendi. |
+| 1 | Kullanıcı incelemesi bekliyor | İlk ekran ve bilgisayar ön izlemesi | İki Compose Preview derleniyor; kullanıcının Android Studio'da görüp tasarım geri bildirimi vermesi bekleniyor. |
 | 2 | Bekliyor | Aylık bütçe, kategoriler ve gelir/gider | Tutarlar kuruş cinsinden doğru hesaplanıyor; ilgili ekranlar çalışıyor. |
 | 3 | Bekliyor | Telefonda kalıcı kayıt | Room/SQLite kayıtları uygulama yeniden açıldığında duruyor. |
 | 4 | Bekliyor | Tek dosya yedek ve geri yükleme | Dosya doğrulanıyor; hatalı dosya veriyi değiştirmiyor; sağlam dosya temiz kurulumda kayıtları geri getiriyor. |
@@ -33,25 +33,30 @@ edilir. Web uygulaması ve emülatör hedeflenmez.
   gönderildi. Bulut ortamına Android SDK 35 ve Gradle 8.13 doğrulanmış
   indirmelerle kuruldu. Uygulama kodu henüz eklenmedi.
 - 2026-10-11: Kullanıcı telefonunun Samsung S22 ve Android 16 olduğunu
-  bildirdi. Gradle çalıştırıcısı oluşturuldu; APK kimliği ve desteklenecek
-  en eski Android sürümü için kullanıcı kararı bekleniyor.
+  bildirdi. Gradle çalıştırıcısı oluşturuldu.
 - 2026-10-11: Android SDK 36 da kuruldu. Android Gradle eklentisi 8.13.2 ve
   Kotlin eklentileri 2.2.20 indirildi; `./gradlew help` başarıyla tamamlandı.
   Bu, henüz APK derlemesi veya ekran ön izlemesi değildir.
-- Sıradaki iş: Bu iki karardan sonra Android uygulama modülünü oluşturup
-  derlemek.
+- 2026-10-11: Kullanıcı kalıcı uygulama kimliğini `com.hmagr.budgetapp`, en
+  eski desteklenen sistemi Android 11 (API 30) olarak seçti.
+- 2026-10-11: İlk Android uygulaması ve örnek/boş durum için iki Compose
+  Preview eklendi. `:app:assembleDebug` başarılı; APK kimliği, en eski sistem
+  sürümü ve imzası doğrulandı. `:app:lintDebug` başarılı; Android 12+ sistem
+  yedekleme kuralı ve geçici uygulama simgesi hakkında iki uyarı var.
+- Sıradaki iş: Kullanıcı Android Studio'da ön izlemeyi açıp tasarım geri
+  bildirimini verecek. Ön izleme bu bulut makinesinde görsel olarak açılmadı.
 
 ## Karar bekleyen konular
 
-- Kalıcı uygulama kimliği: kullanıcı yanıtı bekleniyor. Bu kimlik APK
-  güncellemelerinde ve telefondaki verilerin korunmasında önemlidir.
-- En eski desteklenen Android sürümü: Samsung S22 / Android 16 bilgisi alındı;
-  daha eski telefonların desteklenip desteklenmeyeceği kullanıcı yanıtını
-  bekliyor.
+- Kalıcı uygulama kimliği ve en eski Android sürümü: kullanıcı tarafından
+  `com.hmagr.budgetapp` ve Android 11 olarak kararlaştırıldı.
 - Ekran tasarımı ve etkileşimler: ilk Compose Preview hazır olunca kullanıcıyla
-  birlikte netleştirilecek.
+  birlikte netleştirilecek; nihai simge de buna dahil.
 - Yedek dosyasının parola koruması ve içe aktarmanın mevcut veriye etkisi:
   yedek aşamasına geçmeden önce kullanıcıyla kararlaştırılacak.
+- Android'in otomatik cihazdan cihaza veri taşıma davranışı: kişisel veri
+  depolanmadan önce kullanıcıyla kararlaştırılacak. Uygulama şu anda kişisel
+  veri saklamıyor.
 
 ## Teknik yön
 
