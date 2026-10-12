@@ -41,6 +41,16 @@ jobs:
             outer_whitespace_quotes_or_invisible_marks_removed = $savedPassword.Trim().Trim([char[]]@([char]34, [char]39, [char]0xFEFF, [char]0x200B)).Trim()
             other_password_field = $env:BUDGET_KEY_PASSWORD
           }
+          [Text.Encoding]::RegisterProvider([Text.CodePagesEncodingProvider]::Instance)
+          foreach ($codePage in @(1252, 1254, 437, 850, 857)) {
+            try {
+              $legacy = [Text.Encoding]::GetEncoding($codePage)
+              $candidates["utf8_read_as_$codePage"] = $legacy.GetString([Text.Encoding]::UTF8.GetBytes($savedPassword))
+              $candidates["cp${codePage}_read_as_utf8"] = [Text.Encoding]::UTF8.GetString($legacy.GetBytes($savedPassword))
+            } catch {
+              # A missing code page does not affect the other checks.
+            }
+          }
           foreach ($candidate in $candidates.GetEnumerator()) {
             if ([string]::IsNullOrEmpty($candidate.Value)) { continue }
             $env:BUDGET_KEYSTORE_PASSWORD = $candidate.Value
