@@ -114,10 +114,17 @@ emülatör hedeflenmez.
   ayrı parola seçti; bu değerler GitHub'ın ayrı sır alanlarına yazılacak.
   Dosya ve parolalar depoya veya sohbete gönderilmedi. GitHub sırları ve
   gerçek imzalı APK üretimi hâlâ bekliyor.
-- Sıradaki iş: Kullanıcının GitHub imza sırlarını eklemesinden sonra iş
-  akışını ve telefonda kayıt/düzenleme/silme/yedek/geri yüklemeyi doğrula.
-  GitHub Actions çalışmaları bu ortamın GitHub API erişiminde `Forbidden`
-  yanıtı verdiğinden henüz dışarıdan doğrulanamadı.
+- 2026-10-12: Kullanıcı dört GitHub sırının adlarını depoda gördüğünü
+  bildirdi; değerleri burada görülmedi veya doğrulanmadı. PowerShell'in boş
+  metinle `Set-Clipboard` komutunu reddetmesi üzerine pano yönergesi
+  düzeltildi. GitHub Actions API'sindeki son çalışmalarda hem kontrol hem
+  imzalı APK işi `android-actions/setup-android@v3` adımında başarısız;
+  imzalama adımına ulaşılmadı. Ayrıntılı günlük indirmesi bu ortamın ağ
+  kısıtına takıldı; ilgili alan ortam ayarları taslağına eklendi, yayımlanması
+  bekleniyor.
+- Sıradaki iş: Android kurulum adımındaki hatanın ayrıntısını bulup iş
+  akışını düzelt; sonra gerçek imzalı APK'yı ve telefonda
+  kayıt/düzenleme/silme/yedek/geri yüklemeyi doğrula.
 
 ## Karar bekleyen konular
 
@@ -130,8 +137,8 @@ emülatör hedeflenmez.
   yedeklemesinin kapatılması: kullanıcı tarafından kararlaştırıldı.
 - Yedek dosyasının parola koruması ve içe aktarmanın mevcut veriye etkisi:
   parolayla şifreleme ve doğrulanmış tam değiştirme kararlaştırıldı.
-- Güncellenebilir APK: kullanıcı onayladı; özel anahtarın GitHub sırlarına
-  eklenmesi bekleniyor.
+- Güncellenebilir APK: kullanıcı onayladı; dört GitHub sırrının eklendiği
+  bildirildi, gerçek imzalı derleme doğrulaması bekleniyor.
 - Gelir ve gider kategorilerini kullanıcı oluşturup düzenleyecek; bunlar
   bütün aylarda ortak olacak. Kullanıcı tarafından kararlaştırıldı.
 - Gelir, gider ve yatırıma ayrılan tutar kayıtları düzenlenebilir ve
@@ -144,7 +151,8 @@ emülatör hedeflenmez.
 - Yedek: sürüm bilgisi bulunan tek dosya; Android dosya seçicisiyle dışa/içe
   aktarma; içe aktarma öncesi doğrulama ve bütünlüklü geri yükleme.
 - GitHub: kaynak kodu, plan ve test/derleme iş akışları `main` dalında;
-  indirilebilir imzalı APK için kullanıcının GitHub sırları bekleniyor.
+  imzalı APK iş akışının Android araç kurulumu adımı düzeltilip
+  doğrulanacak.
 - Uygulama hesabı, sunucu, Firebase, otomatik bulut eşitleme yok.
 
 ## Karar ve çalışma kuralı

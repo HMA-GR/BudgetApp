@@ -42,12 +42,12 @@ bu uyarı işlemi durdurmaz. Uyarıdaki dönüştürme komutunu çalıştırman 
 GitHub'da **BudgetApp > Settings > Secrets and variables > Actions > New
 repository secret** yolunu aç. Dört sır ekle:
 
-| Ad | Değer |
-| --- | --- |
-| `BUDGET_KEYSTORE_B64` | JKS dosyasının Base64 kodlanmış içeriği |
-| `BUDGET_KEYSTORE_PASSWORD` | Dosyanın parolası |
-| `BUDGET_KEY_ALIAS` | `budgetapp` |
-| `BUDGET_KEY_PASSWORD` | Anahtarın parolası; aynı parola seçtiysen dosya parolası |
+| Ad | Değer | Ne işe yarar? |
+| --- | --- | --- |
+| `BUDGET_KEYSTORE_B64` | JKS dosyasının Base64 kodlanmış içeriği | GitHub'a imzalama dosyasını aktarır. Base64 şifreleme değildir. |
+| `BUDGET_KEYSTORE_PASSWORD` | Dosyanın parolası | GitHub'ın JKS dosyasını açmasını sağlar. |
+| `BUDGET_KEY_ALIAS` | `budgetapp` | Dosyanın içindeki doğru anahtarı seçer. Parola değildir. |
+| `BUDGET_KEY_PASSWORD` | Anahtarın parolası; aynı parola seçtiysen dosya parolası | Seçilen özel anahtarla APK'yı imzalar. |
 
 Senin dosya parolan ile anahtar parolan farklıysa `BUDGET_KEYSTORE_PASSWORD`
 alanına **ilk parolayı**, `BUDGET_KEY_PASSWORD` alanına **ikinci parolayı** yaz.
@@ -63,7 +63,9 @@ Komut sonucu panoya kopyalar; GitHub sırrına yapıştır. macOS'ta
 `base64 -w 0 BudgetApp-release.jks` çıktısı kopyalanabilir. Base64 bir
 şifreleme değildir; bu metni yalnızca GitHub'ın **secret** alanına koy.
 Windows'ta GitHub'a yapıştırdıktan sonra PowerShell'de
-`Set-Clipboard -Value ''` çalıştırarak panoyu temizleyebilirsin.
+`Set-Clipboard -Value 'Temizlendi'` çalıştırarak panodaki mevcut metni
+değiştirebilirsin. Bazı PowerShell sürümleri boş metni (`''`) kabul etmez.
+Windows pano geçmişi açıksa (Win+V), Base64 kaydını oradan da sil.
 
 ## 3. APK'yı indir
 
@@ -86,5 +88,12 @@ dosya parolası, anahtar parolası ve `budgetapp` takma adı birlikte gerekir.
 GitHub deposu ve dört sırrı korunuyorsa yeni bilgisayardan GitHub iş akışını
 çalıştırıp APK üretebilirsin. GitHub sırları silinirse veya başka bir depoya
 geçersen sakladığın dosya ve iki parolayla sırları yeniden oluşturman gerekir.
+Bu yüzden JKS dosyasının en az bir bağımsız kopyasını, örneğin güvenle saklanan
+bir USB bellekte veya şifreli dosya kasasında tut; iki parolayı da güvenli
+bir parola yöneticisinde sakla. GitHub sırları kaydedildikten sonra değerleri
+arayüzden tekrar gösterilmez. Hem GitHub sırları hem de JKS kopyaları kaybolursa
+aynı uygulama kurulumunu güncellemek mümkün olmaz. Yeni anahtarla APK üretmek
+eski uygulamanın üzerine kurulum sağlamaz; telefondaki verileri korumak için
+önce uygulama içinden şifreli veri yedeği almak gerekir.
 Android'in mevcut kurulumun üzerine güncelleme yapabilmesi için uygulama
 kimliği aynı kalmalı ve yeni APK'nın sürüm numarası daha yüksek olmalıdır.
