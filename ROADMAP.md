@@ -132,9 +132,13 @@ emülatör hedeflenmez.
   sır/dosya, dosya parolası ve takma ad, APK derleme, imza doğrulama olarak
   ayrı adımlara bölündü. İlk gönderimde son komutun YAML yazımı hatalıydı;
   GitHub iş başlamadan reddetti. Yazım düzeltildi ve YAML ayrıştırıcısıyla
-  kontrol edildi; yeni sonucu bekleniyor.
-- Sıradaki iş: İmzalı APK işinin hangi adımda durduğunu doğrula, ilgili
-  hatayı düzelt; sonra gerçek imzalı APK'yı ve telefonda
+  kontrol edildi. Sonraki çalışmalarda sırların varlığı ve Base64 çözme
+  adımı geçti; `Check keystore password and alias` adımı hem `main` hem yan
+  dalda başarısız. Kullanıcının kendi Windows dosyasında ilk (dosya)
+  parolasını ve `budgetapp` takma adını doğrulaması istendi. İkinci (anahtar)
+  parola henüz sınanmadı; gizli değerler bu ortama alınmadı.
+- Sıradaki iş: Kullanıcının yerel JKS kontrolü sonucuna göre GitHub sırlarını
+  düzeltmesine yardımcı ol; ardından gerçek imzalı APK'yı ve telefonda
   kayıt/düzenleme/silme/yedek/geri yüklemeyi doğrula.
 
 ## Karar bekleyen konular

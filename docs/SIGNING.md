@@ -81,6 +81,27 @@ kaldır, sonra imzalı APK'yı yükleyip yedeği geri al. Bundan sonraki
 imzalı sürümler aynı anahtarla üretildiğinde eski sürümün üzerine kurulur.
 İş akışı her çalışmada Android sürüm numarasını artırır.
 
+## İmza dosyası kontrolü hata verirse
+
+GitHub'da **Check signing secrets and decode file** adımı geçip **Check
+keystore password and alias** adımı kırmızı olursa JKS dosyası çözülmüştür,
+ancak GitHub dosya parolasını veya `budgetapp` adını doğrulayamamıştır.
+Bu aşamada ikinci (anahtar) parola henüz kullanılmaz. Windows PowerShell'de
+şu komutu çalıştır:
+
+```powershell
+keytool -list -storetype JKS -keystore "$env:USERPROFILE\BudgetApp-release.jks" -alias budgetapp
+```
+
+Sorulunca **ilk, dosya parolasını** gir. Başarılıysa sonuçta `budgetapp` ve
+`PrivateKeyEntry` görünür. GitHub sırlarının değerleri kaydedildikten sonra
+tekrar gösterilmez; gerekirse **Settings > Secrets and variables > Actions**
+sayfasında `BUDGET_KEYSTORE_PASSWORD` değerini ilk parolayla,
+`BUDGET_KEY_ALIAS` değerini `budgetapp` ile yeniden kaydet. Aynı JKS dosyasını
+aktardığından emin değilsen yukarıdaki Base64 komutuyla
+`BUDGET_KEYSTORE_B64` değerini yeniden oluştur. Parolaları ve Base64 metnini
+sohbete veya depoya gönderme.
+
 ## Bilgisayar değiştirirsen
 
 Parolalar tek başına yeterli değildir: **aynı `BudgetApp-release.jks` dosyası**,
