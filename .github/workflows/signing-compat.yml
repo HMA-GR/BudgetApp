@@ -21,6 +21,7 @@ jobs:
           BUDGET_KEYSTORE_B64: ${{ secrets.BUDGET_KEYSTORE_B64 }}
           BUDGET_KEYSTORE_PASSWORD: ${{ secrets.BUDGET_KEYSTORE_PASSWORD }}
           BUDGET_KEY_ALIAS: ${{ secrets.BUDGET_KEY_ALIAS }}
+          BUDGET_KEY_PASSWORD: ${{ secrets.BUDGET_KEY_PASSWORD }}
         run: |
           if ([string]::IsNullOrEmpty($env:BUDGET_KEYSTORE_B64)) { throw 'BUDGET_KEYSTORE_B64 is missing' }
           if ([string]::IsNullOrEmpty($env:BUDGET_KEYSTORE_PASSWORD)) { throw 'BUDGET_KEYSTORE_PASSWORD is missing' }
@@ -28,5 +29,24 @@ jobs:
           $keyStorePath = Join-Path $env:RUNNER_TEMP 'budget-release.jks'
           [IO.File]::WriteAllBytes($keyStorePath, [Convert]::FromBase64String($env:BUDGET_KEYSTORE_B64))
           Write-Output "Signing file SHA-256: $((Get-FileHash -Algorithm SHA256 $keyStorePath).Hash)"
-          keytool -list -storetype JKS -keystore $keyStorePath -storepass:env BUDGET_KEYSTORE_PASSWORD -alias $env:BUDGET_KEY_ALIAS
-          if ($LASTEXITCODE -ne 0) { throw 'Keystore check failed on Windows' }
+          $savedPassword = $env:BUDGET_KEYSTORE_PASSWORD
+          $candidates = [ordered]@{
+            saved = $savedPassword
+            unicode_form_c = $savedPassword.Normalize([Text.NormalizationForm]::FormC)
+            unicode_form_d = $savedPassword.Normalize([Text.NormalizationForm]::FormD)
+            unicode_form_kc = $savedPassword.Normalize([Text.NormalizationForm]::FormKC)
+            unicode_form_kd = $savedPassword.Normalize([Text.NormalizationForm]::FormKD)
+            outer_whitespace_removed = $savedPassword.Trim()
+            other_password_field = $env:BUDGET_KEY_PASSWORD
+          }
+          foreach ($candidate in $candidates.GetEnumerator()) {
+            if ([string]::IsNullOrEmpty($candidate.Value)) { continue }
+            $env:BUDGET_KEYSTORE_PASSWORD = $candidate.Value
+            keytool -list -storetype JKS -keystore $keyStorePath -storepass:env BUDGET_KEYSTORE_PASSWORD -alias $env:BUDGET_KEY_ALIAS > $null 2>&1
+            if ($LASTEXITCODE -eq 0) {
+              Write-Output "Compatible password form: $($candidate.Key)"
+              exit 0
+            }
+          }
+          $env:BUDGET_KEYSTORE_PASSWORD = $savedPassword
+          throw 'No tested password form could open the unchanged keystore'

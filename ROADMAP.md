@@ -174,7 +174,11 @@ emülatör hedeflenmez.
 - 2026-10-12: Kullanıcı kararını değiştirdi: mevcut GitHub sırları ve JKS
   parolaları kalacak. Önceki parola değiştirme yönergesi uygulanmadı; yalnızca
   alternatif olarak tutuluyor. Aynı sırlarla GitHub'ın Windows çalıştırıcısında
-  JKS açma kontrolü eklendi; Linux/Windows farkı sınanacak.
+  JKS açma kontrolü eklendi. Windows'ta da aynı dosya özeti ve aynı
+  `Keystore was tampered with, or password was incorrect` hatası görüldü;
+  sorun yalnızca Linux'a özgü değil. Mevcut sır değerlerini değiştirmeden
+  Unicode biçimleri, dış boşluklar ve iki parola alanının olası karışması
+  sınanacak; parola metni günlüğe yazılmayacak.
 - Sıradaki iş: İlk dosya parolasıyla GitHub sırrı arasındaki uyuşmazlığı
   mevcut sırları koruyarak teşhis edip gider;
   ardından gerçek imzalı APK'yı ve telefonda
