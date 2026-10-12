@@ -105,6 +105,10 @@ emülatör hedeflenmez.
   lint ve debug APK derlemesi geçti; üç değişen tarayıcı görüntüsü üretildi
   ve görsel olarak incelendi. Örnek verilerle telefon deneme yönergesi
   eklendi. Düzenleme/silme davranışı telefonda henüz sınanmadı.
+- 2026-10-12: Kullanıcının isteğiyle `codex/android-setup` dalındaki 10 commit
+  çakışmasız ileri taşıma yöntemiyle `main` dalına gönderildi (`90dac5d`).
+  Depoda kişisel veri veya imza anahtarı bulunmadığı kontrol edildi. GitHub
+  Actions sonucu ve telefondaki davranış hâlâ doğrulama bekliyor.
 - Sıradaki iş: Kullanıcının GitHub imza sırlarını eklemesinden sonra iş
   akışını ve telefonda kayıt/düzenleme/silme/yedek/geri yüklemeyi doğrula.
   GitHub Actions çalışmaları bu ortamın GitHub API erişiminde `Forbidden`
@@ -134,7 +138,8 @@ emülatör hedeflenmez.
 - Yerel veri: SQLite; parasal tutarlar kuruş cinsinden tam sayı.
 - Yedek: sürüm bilgisi bulunan tek dosya; Android dosya seçicisiyle dışa/içe
   aktarma; içe aktarma öncesi doğrulama ve bütünlüklü geri yükleme.
-- GitHub: kaynak kodu ve plan; ileride test/derleme ve indirilebilir APK.
+- GitHub: kaynak kodu, plan ve test/derleme iş akışları `main` dalında;
+  indirilebilir imzalı APK için kullanıcının GitHub sırları bekleniyor.
 - Uygulama hesabı, sunucu, Firebase, otomatik bulut eşitleme yok.
 
 ## Karar ve çalışma kuralı

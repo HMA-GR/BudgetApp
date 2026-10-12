@@ -45,7 +45,7 @@ Eski kategorisiz kayıtlar korunur; önceki şifreli yedekler açılabilir.
 
 1. [Android Studio](https://developer.android.com/studio) kur. Emülatör
    kurman gerekmiyor.
-2. GitHub'daki `codex/android-setup` dalını bilgisayarına indir veya klonla.
+2. GitHub'daki `main` dalını bilgisayarına indir veya klonla.
    Android Studio'da **File > Open** ile `BudgetApp` klasörünü aç.
 3. Android Studio'nun **Gradle Sync** işlemini bitirmesini bekle. İsterse
    Android SDK 36 bileşenlerini kur.
