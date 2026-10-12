@@ -171,8 +171,12 @@ emülatör hedeflenmez.
 - 2026-10-12: Kullanıcı iki koruma parolasını standart karakterli iki yeni
   parolaya çevirme yolunu seçti. Önce bilgisayar dışı JKS kopyası ve eski
   sertifika SHA-256 parmak izi doğrulanacak. Gerçek JKS henüz değiştirilmedi.
+- 2026-10-12: Kullanıcı kararını değiştirdi: mevcut GitHub sırları ve JKS
+  parolaları kalacak. Önceki parola değiştirme yönergesi uygulanmadı; yalnızca
+  alternatif olarak tutuluyor. Aynı sırlarla GitHub'ın Windows çalıştırıcısında
+  JKS açma kontrolü eklendi; Linux/Windows farkı sınanacak.
 - Sıradaki iş: İlk dosya parolasıyla GitHub sırrı arasındaki uyuşmazlığı
-  kararlaştırılan parola değişimiyle gider;
+  mevcut sırları koruyarak teşhis edip gider;
   ardından gerçek imzalı APK'yı ve telefonda
   kayıt/düzenleme/silme/yedek/geri yüklemeyi doğrula.
 

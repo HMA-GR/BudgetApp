@@ -112,8 +112,8 @@ halde GitHub ilk parolayla dosyayı açamıyorsa, **dosya ve anahtar koruma
 parolalarını** standart karakterli iki yeni parolaya çevirmek bir seçenektir.
 Bu işlem imza anahtarını veya sertifikasını değiştirmez; doğru yapıldığını
 sertifikanın SHA-256 parmak izini karşılaştırarak denetleyeceğiz. Kullanıcı
-iki parolayı değiştirme yolunu seçti; önce bilgisayar dışındaki yedek ve
-eski sertifika parmak izi doğrulanacak.
+şimdilik mevcut parolaları korumayı seçti. Aşağıdaki adımlar bir alternatif
+olarak duruyor ve kullanıcı yeniden seçmedikçe uygulanmayacak.
 
 1. `BudgetApp-release.jks` dosyasının bir kopyasını bilgisayar dışında
    güvenli bir USB belleğe veya şifreli dosya kasasına kaydet. Eski dosyayı

@@ -1,0 +1,32 @@
+name: Signing key compatibility check
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows-keystore:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Check existing keystore on Windows
+        shell: pwsh
+        env:
+          BUDGET_KEYSTORE_B64: ${{ secrets.BUDGET_KEYSTORE_B64 }}
+          BUDGET_KEYSTORE_PASSWORD: ${{ secrets.BUDGET_KEYSTORE_PASSWORD }}
+          BUDGET_KEY_ALIAS: ${{ secrets.BUDGET_KEY_ALIAS }}
+        run: |
+          if ([string]::IsNullOrEmpty($env:BUDGET_KEYSTORE_B64)) { throw 'BUDGET_KEYSTORE_B64 is missing' }
+          if ([string]::IsNullOrEmpty($env:BUDGET_KEYSTORE_PASSWORD)) { throw 'BUDGET_KEYSTORE_PASSWORD is missing' }
+          if ([string]::IsNullOrEmpty($env:BUDGET_KEY_ALIAS)) { throw 'BUDGET_KEY_ALIAS is missing' }
+          $keyStorePath = Join-Path $env:RUNNER_TEMP 'budget-release.jks'
+          [IO.File]::WriteAllBytes($keyStorePath, [Convert]::FromBase64String($env:BUDGET_KEYSTORE_B64))
+          Write-Output "Signing file SHA-256: $((Get-FileHash -Algorithm SHA256 $keyStorePath).Hash)"
+          keytool -list -storetype JKS -keystore $keyStorePath -storepass:env BUDGET_KEYSTORE_PASSWORD -alias $env:BUDGET_KEY_ALIAS
+          if ($LASTEXITCODE -ne 0) { throw 'Keystore check failed on Windows' }
