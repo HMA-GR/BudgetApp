@@ -105,20 +105,30 @@ aktardığından emin değilsen yukarıdaki Base64 komutuyla
 `BUDGET_KEYSTORE_B64` değerini yeniden oluştur. Parolaları ve Base64 metnini
 sohbete veya depoya gönderme.
 
-## Unicode parola uyumsuzluğunu giderme
+## Unicode parola uyumsuzluğunu giderme: seçilen yol
 
 Yerel JKS dosyasının SHA-256 özeti GitHub'da çözülen dosyayla aynı olduğu
 halde GitHub ilk parolayla dosyayı açamıyorsa, **dosya ve anahtar koruma
-parolalarını** standart karakterli iki yeni parolaya çevirmek bir seçenektir.
-Bu işlem imza anahtarını veya sertifikasını değiştirmez; doğru yapıldığını
-sertifikanın SHA-256 parmak izini karşılaştırarak denetleyeceğiz. Kullanıcı
-şimdilik mevcut parolaları korumayı seçti. Aşağıdaki adımlar bir alternatif
-olarak duruyor ve kullanıcı yeniden seçmedikçe uygulanmayacak.
+parolalarını** standart karakterli iki yeni parolaya çevirmek gerekir.
+Kullanıcı bu yolu seçti. Bu işlem imza anahtarını veya sertifikasını
+değiştirmez; doğru yapıldığını sertifikanın SHA-256 parmak izini
+karşılaştırarak denetleyeceğiz. Parola değiştirmeye başlamadan önce aşağıdaki
+yedek adımını tamamla.
 
 1. `BudgetApp-release.jks` dosyasının bir kopyasını bilgisayar dışında
    güvenli bir USB belleğe veya şifreli dosya kasasına kaydet. Eski dosyayı
-   açabilmek için mevcut iki parolayı da sakla. Kopya alınmadan sonraki
-   komutlara geçme.
+   açabilmek için mevcut iki parolayı da sakla. Kopyanın SHA-256 dosya
+   özeti, eski dosya için daha önce doğrulanan
+   `5CA5294BA2DDE9DB9B68B7F01A5DF9FCEB66B3EE8B4996FE86CF3F1E2F77D56A`
+   ile aynı olmalı. Örneğin USB `E:` sürücüsündeyse aşağıdaki komutta sürücü
+   harfini kendi bilgisayarına göre düzelt:
+
+   ```powershell
+   (Get-FileHash -Algorithm SHA256 'E:\BudgetApp-release.jks').Hash
+   ```
+
+   Bu özet eşleşmeden sonraki komutlara geçme. JKS dosyasını Git deposuna
+   veya bu sohbete yükleme.
 2. PowerShell'de mevcut sertifikanın `SHA256:` satırını not et:
 
    ```powershell
@@ -133,8 +143,10 @@ olarak duruyor ve kullanıcı yeniden seçmedikçe uygulanmayacak.
    ```
 
    Önce eski dosya parolasını, sonra yeni dosya parolasını iki kez gir.
-   Yeni ve güçlü parola için İngilizce harfler, rakamlar ve standart
-   noktalama kullan; Türkçe/aksanlı harf, emoji ve boşluk kullanma.
+   Yeni ve güçlü parola için parola yöneticisinde üretilmiş en az 24 rastgele
+   İngilizce harf ve rakam kullan; Türkçe/aksanlı harf, emoji, boşluk veya
+   noktalama kullanma. Yeni parolayı sohbete, Git deposuna veya komut satırına
+   yazma; `keytool` istediğinde görünmeden gir.
    Komut hata verirse sonraki adıma geçme.
 4. Yalnızca `budgetapp` anahtarının koruma parolasını değiştir:
 
@@ -144,7 +156,8 @@ olarak duruyor ve kullanıcı yeniden seçmedikçe uygulanmayacak.
 
    Önce **yeni dosya parolasını**, ardından **eski anahtar parolasını**,
    sonra **yeni anahtar parolasını** gir. İki yeni parola farklı olabilir.
-   Yeni anahtar parolası için de yalnızca standart karakterleri kullan.
+   Yeni anahtar parolası için de en az 24 rastgele İngilizce harf ve rakam
+   kullan; dosya parolasından farklı seç.
    Komut hata verirse sonraki adıma geçme.
 5. İkinci adımdaki sertifika `SHA256:` komutunu yeni dosya parolasıyla
    tekrar çalıştır. **Önceki parmak iziyle aynı** olmalıdır. Farklıysa
@@ -155,6 +168,9 @@ olarak duruyor ve kullanıcı yeniden seçmedikçe uygulanmayacak.
    PowerShell Base64 komutuyla yeniden oluşturup kaydet. `BUDGET_KEY_ALIAS`
    yine `budgetapp` olmalıdır. Yeni JKS dosyasını ve yeni parolaları
    bilgisayar dışında da güvenle sakla.
+7. GitHub'da **Actions > Signed Android APK > Run workflow** yoluyla `main`
+   dalı için iş akışını başlat. `Check keystore password and alias` ve
+   `Verify APK signature` adımları geçmeden APK'yı telefona kurma.
 
 ## Bilgisayar değiştirirsen
 

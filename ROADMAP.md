@@ -185,9 +185,19 @@ emülatör hedeflenmez.
   gizli istemden alıp `keytool -storepass:env` ile denemesinin yalnızca çıkış
   kodu istendi; sonuç bekleniyor. Bu, yerel etkileşimli istem ile ortam
   değişkeni okumasının ayrılıp ayrılmadığını gösterecek.
-- Sıradaki iş: İlk dosya parolasıyla GitHub sırrı arasındaki uyuşmazlığı
-  mevcut sırları koruyarak teşhis edip gider;
-  ardından gerçek imzalı APK'yı ve telefonda
+- 2026-10-12: Kullanıcı Windows'ta ilk dosya parolasını gizli istemden alıp
+  `keytool -storepass:env` ile denedi; çıkış kodu `1` oldu. Yerel
+  etkileşimli giriş daha önce çalışmıştı. Java'nın etkileşimli parola
+  okumasında konsol karakter kodlaması kullanması, Unicode parolayla bu
+  farkı açıklayabilir. Hata metni henüz görülmedi. Kullanıcı kararını tekrar
+  değiştirdi: mevcut parolaları korumak yerine yeni GitHub secret değerleriyle
+  sorunu kökten gidermek istiyor. Aynı imza anahtarı ve `budgetapp` takma adı
+  korunarak, iki JKS parolası yeni ASCII harf/rakam parolalarıyla
+  değiştirilecek. Kullanıcının gerçek JKS dosyası henüz değiştirilmedi;
+  bağımsız yedek ve sertifika parmak izi ilk zorunlu adımlar.
+- Sıradaki iş: Bağımsız JKS yedeğini ve eski sertifika parmak izini doğrula;
+  ardından iki parolayı değiştirip üç GitHub secret değerini güncelle,
+  gerçek imzalı APK'yı üret ve telefonda
   kayıt/düzenleme/silme/yedek/geri yüklemeyi doğrula.
 
 ## Karar bekleyen konular
