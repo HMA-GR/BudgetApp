@@ -94,7 +94,10 @@ keytool -list -storetype JKS -keystore "$env:USERPROFILE\BudgetApp-release.jks" 
 ```
 
 Sorulunca **ilk, dosya parolasını** gir. Başarılıysa sonuçta `budgetapp` ve
-`PrivateKeyEntry` görünür. GitHub sırlarının değerleri kaydedildikten sonra
+`PrivateKeyEntry` görünür ve `The integrity ... has NOT been verified`
+uyarısı çıkmaz. Enter'a basıp parolayı boş bırakırsan `PrivateKeyEntry` yine
+görünebilir, fakat bu uyarı parolanın doğrulanmadığını belirtir.
+GitHub sırlarının değerleri kaydedildikten sonra
 tekrar gösterilmez; gerekirse **Settings > Secrets and variables > Actions**
 sayfasında `BUDGET_KEYSTORE_PASSWORD` değerini ilk parolayla,
 `BUDGET_KEY_ALIAS` değerini `budgetapp` ile yeniden kaydet. Aynı JKS dosyasını

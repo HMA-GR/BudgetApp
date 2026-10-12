@@ -138,8 +138,9 @@ emülatör hedeflenmez.
   parolasını ve `budgetapp` takma adını doğrulaması istendi. İkinci (anahtar)
   parola henüz sınanmadı; gizli değerler bu ortama alınmadı.
 - 2026-10-12: Kullanıcı kendi Windows bilgisayarında `keytool -list` sonucunda
-  `budgetapp` ve `PrivateKeyEntry` gördüğünü bildirdi. Yerel JKS dosyası,
-  ilk dosya parolası ve takma adı birlikte doğrulandı. GitHub'daki
+  `budgetapp` ve `PrivateKeyEntry` gördüğünü bildirdi. Bu çıktı, boş parola
+  girildiğinde bütünlük uyarısıyla birlikte de oluşabildiği için yerel ilk
+  parolanın doğrulandığı henüz kesin değil. GitHub'daki
   `BUDGET_KEYSTORE_B64`, `BUDGET_KEYSTORE_PASSWORD` ve `BUDGET_KEY_ALIAS`
   sırlarının aynı dosya ve parolayla yeniden kaydedilmesi bekleniyor.
 - 2026-10-12: Kullanıcı bu üç GitHub sırrını yenilediğini bildirdi.
@@ -151,7 +152,12 @@ emülatör hedeflenmez.
   kopyasıyla ilk parola eşleşmediğinde de olur. GitHub'da çözülen JKS'nin
   SHA-256 dosya özeti günlükte gösterilecek; kullanıcıdan yerel dosyanın
   özeti istendi. Dosya veya parolanın kendisi okunmadı veya depoya eklenmedi.
-- Sıradaki iş: İki dosya özetini karşılaştırıp imza sırrındaki uyuşmazlığı
+- 2026-10-12: Kullanıcının bildirdiği yerel JKS SHA-256 özetiyle GitHub'ın
+  çözdüğü JKS özeti birebir eşleşti. Dosya kopyası doğru; GitHub'ın
+  `BUDGET_KEYSTORE_PASSWORD` değeri dosyayı açamıyor. Kullanıcı ilk dosya
+  parolasında Unicode karakter veya boşluk olduğunu bildirdi; baş/son boşluk
+  ve yerel `keytool` bütünlük uyarısı hakkında yanıt bekleniyor.
+- Sıradaki iş: İlk dosya parolasıyla GitHub sırrı arasındaki uyuşmazlığı
   gider;
   ardından gerçek imzalı APK'yı ve telefonda
   kayıt/düzenleme/silme/yedek/geri yüklemeyi doğrula.
