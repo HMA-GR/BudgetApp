@@ -105,6 +105,56 @@ aktardığından emin değilsen yukarıdaki Base64 komutuyla
 `BUDGET_KEYSTORE_B64` değerini yeniden oluştur. Parolaları ve Base64 metnini
 sohbete veya depoya gönderme.
 
+## Unicode parola uyumsuzluğunu giderme (önce karar verilecek)
+
+Yerel JKS dosyasının SHA-256 özeti GitHub'da çözülen dosyayla aynı olduğu
+halde GitHub ilk parolayla dosyayı açamıyorsa, **dosya ve anahtar koruma
+parolalarını** standart karakterli iki yeni parolaya çevirmek bir seçenektir.
+Bu işlem imza anahtarını veya sertifikasını değiştirmez; doğru yapıldığını
+sertifikanın SHA-256 parmak izini karşılaştırarak denetleyeceğiz. Gerçek
+dosyada değişiklik yapmadan önce kullanıcı bu yolu seçmelidir.
+
+1. `BudgetApp-release.jks` dosyasının bir kopyasını bilgisayar dışında
+   güvenli bir USB belleğe veya şifreli dosya kasasına kaydet. Eski dosyayı
+   açabilmek için mevcut iki parolayı da sakla. Kopya alınmadan sonraki
+   komutlara geçme.
+2. PowerShell'de mevcut sertifikanın `SHA256:` satırını not et:
+
+   ```powershell
+   keytool -list -v -storetype JKS -keystore "$env:USERPROFILE\BudgetApp-release.jks" -alias budgetapp | Select-String 'SHA256:'
+   ```
+
+   Sorulduğunda **eski dosya parolasını** gir. Komut hata verirse dur.
+3. Yalnızca dosya koruma parolasını değiştir:
+
+   ```powershell
+   keytool -storepasswd -storetype JKS -keystore "$env:USERPROFILE\BudgetApp-release.jks"
+   ```
+
+   Önce eski dosya parolasını, sonra yeni dosya parolasını iki kez gir.
+   Yeni ve güçlü parola için İngilizce harfler, rakamlar ve standart
+   noktalama kullan; Türkçe/aksanlı harf, emoji ve boşluk kullanma.
+   Komut hata verirse sonraki adıma geçme.
+4. Yalnızca `budgetapp` anahtarının koruma parolasını değiştir:
+
+   ```powershell
+   keytool -keypasswd -storetype JKS -keystore "$env:USERPROFILE\BudgetApp-release.jks" -alias budgetapp
+   ```
+
+   Önce **yeni dosya parolasını**, ardından **eski anahtar parolasını**,
+   sonra **yeni anahtar parolasını** gir. İki yeni parola farklı olabilir.
+   Yeni anahtar parolası için de yalnızca standart karakterleri kullan.
+   Komut hata verirse sonraki adıma geçme.
+5. İkinci adımdaki sertifika `SHA256:` komutunu yeni dosya parolasıyla
+   tekrar çalıştır. **Önceki parmak iziyle aynı** olmalıdır. Farklıysa
+   GitHub sırlarını değiştirme ve dur.
+6. GitHub'da `BUDGET_KEYSTORE_PASSWORD` değerini yeni dosya parolasıyla,
+   `BUDGET_KEY_PASSWORD` değerini yeni anahtar parolasıyla değiştir. JKS
+   dosyası değiştiği için `BUDGET_KEYSTORE_B64` değerini yukarıdaki
+   PowerShell Base64 komutuyla yeniden oluşturup kaydet. `BUDGET_KEY_ALIAS`
+   yine `budgetapp` olmalıdır. Yeni JKS dosyasını ve yeni parolaları
+   bilgisayar dışında da güvenle sakla.
+
 ## Bilgisayar değiştirirsen
 
 Parolalar tek başına yeterli değildir: **aynı `BudgetApp-release.jks` dosyası**,

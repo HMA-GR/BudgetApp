@@ -163,8 +163,11 @@ emülatör hedeflenmez.
   rağmen GitHub'daki parola onu açamıyor. Örnek JKS dosyasında farklı bir
   anahtar parolası korunarak yalnızca dosya parolası değiştirildi; imza
   sertifikası aynı kaldı ve yeni parola çalıştı. Bu işlem gerçek anahtarda
-  yapılmadı. Kullanıcının ikinci parola karakter türü ve çözüm kararı
-  bekleniyor.
+  yapılmadı. Kullanıcı ikinci anahtar parolasında da Unicode karakter
+  olduğunu bildirdi. Örnek JKS'de iki koruma parolasının birlikte
+  değiştirilmesi de denendi; sertifika aynı kaldı ve yeni parolalar çalıştı.
+  Gerçek JKS için güvenli kopya, iki parola değişimi ve sertifika parmak izi
+  kontrolü içeren yönerge hazırlandı. Kullanıcının çözüm kararı bekleniyor.
 - Sıradaki iş: İlk dosya parolasıyla GitHub sırrı arasındaki uyuşmazlığı
   kullanıcıyla kararlaştırılan yolla gider;
   ardından gerçek imzalı APK'yı ve telefonda
