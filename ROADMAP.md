@@ -109,6 +109,11 @@ emülatör hedeflenmez.
   çakışmasız ileri taşıma yöntemiyle `main` dalına gönderildi (`90dac5d`).
   Depoda kişisel veri veya imza anahtarı bulunmadığı kontrol edildi. GitHub
   Actions sonucu ve telefondaki davranış hâlâ doğrulama bekliyor.
+- 2026-10-12: Kullanıcı Windows'ta imza anahtarı dosyasını oluşturdu ve
+  `Test-Path` sonucunun `True` olduğunu bildirdi. Dosya ile anahtar için iki
+  ayrı parola seçti; bu değerler GitHub'ın ayrı sır alanlarına yazılacak.
+  Dosya ve parolalar depoya veya sohbete gönderilmedi. GitHub sırları ve
+  gerçek imzalı APK üretimi hâlâ bekliyor.
 - Sıradaki iş: Kullanıcının GitHub imza sırlarını eklemesinden sonra iş
   akışını ve telefonda kayıt/düzenleme/silme/yedek/geri yüklemeyi doğrula.
   GitHub Actions çalışmaları bu ortamın GitHub API erişiminde `Forbidden`

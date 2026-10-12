@@ -28,9 +28,9 @@ Sorulduğunda güçlü bir parola belirle. Anahtar için ayrıca parola sorulurs
 Enter'a basarak aynı parolayı kullanabilirsin. Oluşan `BudgetApp-release.jks`
 dosyası Windows kullanıcı klasöründedir. PowerShell'de
 `Test-Path "$env:USERPROFILE\BudgetApp-release.jks"` komutu `True` döndürmelidir.
-Dosyayı ve parolayı güvenli iki yerde sakla. Dosya veya parola kaybolursa
-aynı uygulamaya güncelleme yayımlayamazsın. `budgetapp` burada anahtarın
-takma adıdır; değiştirmene gerek yok.
+Dosyayı ve kullandığın iki farklı parolayı güvenli iki yerde sakla. GitHub
+sırlarına erişim de kaybolursa bu bilgiler olmadan aynı uygulamaya güncelleme
+yayımlayamazsın. `budgetapp` anahtarın takma adıdır; değiştirmene gerek yok.
 
 Parolayı yazarken ekranda karakter görünmemesi normaldir. Bu parola, uygulama
 içindeki yedek dosyası parolasından farklı olabilir.
@@ -48,6 +48,9 @@ repository secret** yolunu aç. Dört sır ekle:
 | `BUDGET_KEYSTORE_PASSWORD` | Dosyanın parolası |
 | `BUDGET_KEY_ALIAS` | `budgetapp` |
 | `BUDGET_KEY_PASSWORD` | Anahtarın parolası; aynı parola seçtiysen dosya parolası |
+
+Senin dosya parolan ile anahtar parolan farklıysa `BUDGET_KEYSTORE_PASSWORD`
+alanına **ilk parolayı**, `BUDGET_KEY_PASSWORD` alanına **ikinci parolayı** yaz.
 
 `BUDGET_KEYSTORE_B64` değerini üretmek için Windows PowerShell'de:
 
@@ -75,3 +78,13 @@ Debug APK kuruluysa önce uygulamada şifreli yedek oluştur, debug APK'yı
 kaldır, sonra imzalı APK'yı yükleyip yedeği geri al. Bundan sonraki
 imzalı sürümler aynı anahtarla üretildiğinde eski sürümün üzerine kurulur.
 İş akışı her çalışmada Android sürüm numarasını artırır.
+
+## Bilgisayar değiştirirsen
+
+Parolalar tek başına yeterli değildir: **aynı `BudgetApp-release.jks` dosyası**,
+dosya parolası, anahtar parolası ve `budgetapp` takma adı birlikte gerekir.
+GitHub deposu ve dört sırrı korunuyorsa yeni bilgisayardan GitHub iş akışını
+çalıştırıp APK üretebilirsin. GitHub sırları silinirse veya başka bir depoya
+geçersen sakladığın dosya ve iki parolayla sırları yeniden oluşturman gerekir.
+Android'in mevcut kurulumun üzerine güncelleme yapabilmesi için uygulama
+kimliği aynı kalmalı ve yeni APK'nın sürüm numarası daha yüksek olmalıdır.
