@@ -122,6 +122,10 @@ emülatör hedeflenmez.
   imzalama adımına ulaşılmadı. Ayrıntılı günlük indirmesi bu ortamın ağ
   kısıtına takıldı; ilgili alan ortam ayarları taslağına eklendi, yayımlanması
   bekleniyor.
+- 2026-10-12: GitHub'ın Ubuntu 24.04 çalıştırıcı görüntüsü dökümünde
+  Android 36 platformu, Build Tools 36.0.0 ve `ANDROID_HOME` hazır görünüyor.
+  Hata veren ek SDK kurulum adımı iki iş akışından çıkarıldı; hazır araçlar
+  için dosya kontrolü eklendi. GitHub'da yeni çalışmaların sonucu bekleniyor.
 - Sıradaki iş: Android kurulum adımındaki hatanın ayrıntısını bulup iş
   akışını düzelt; sonra gerçek imzalı APK'yı ve telefonda
   kayıt/düzenleme/silme/yedek/geri yüklemeyi doğrula.

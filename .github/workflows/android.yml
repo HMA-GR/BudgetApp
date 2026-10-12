@@ -19,9 +19,10 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-      - uses: android-actions/setup-android@v3
-      - name: Install Android SDK packages
-        run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
+      - name: Check preinstalled Android SDK
+        run: |
+          test -f "$ANDROID_HOME/platforms/android-36/android.jar"
+          test -x "$ANDROID_HOME/build-tools/36.0.0/apksigner"
       - uses: gradle/actions/setup-gradle@v4
       - name: Test, check screenshots, lint, and build
         run: ./gradlew :app:testDebugUnitTest :app:validateDebugScreenshotTest :app:lintDebug :app:assembleDebug --no-daemon
