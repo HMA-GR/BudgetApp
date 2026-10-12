@@ -17,24 +17,25 @@ kurucusunu](https://adoptium.net/temurin/releases/?version=21) indirip kur.
 Kurucuda komutları PATH'e ekleme seçeneği varsa etkinleştir. PowerShell'i
 kapatıp yeniden aç; `keytool -help` komutunu tekrar dene.
 
-Dosya Gezgini'nde **Belgeler** içinde `BudgetApp-imza` adlı bir klasör oluştur.
-Bu klasörü aç, üstteki adres çubuğuna `powershell` yazıp Enter'a bas. Açılan
-PowerShell penceresinde şu komutu çalıştır:
+PowerShell'de şu komutu çalıştır. Dosya yolu tam yazıldığı için PowerShell'in
+hangi klasörde açıldığı önemli değildir:
 
 ```powershell
-keytool -genkeypair -keystore BudgetApp-release.jks -storetype JKS -alias budgetapp -keyalg RSA -keysize 3072 -validity 10000 -dname "CN=BudgetApp"
+keytool -genkeypair -keystore "$env:USERPROFILE\BudgetApp-release.jks" -storetype JKS -alias budgetapp -keyalg RSA -keysize 3072 -validity 10000 -dname "CN=BudgetApp"
 ```
 
 Sorulduğunda güçlü bir parola belirle. Anahtar için ayrıca parola sorulursa
 Enter'a basarak aynı parolayı kullanabilirsin. Oluşan `BudgetApp-release.jks`
-dosyasını ve parolayı güvenli iki yerde sakla. Dosya veya parola kaybolursa
+dosyası Windows kullanıcı klasöründedir. PowerShell'de
+`Test-Path "$env:USERPROFILE\BudgetApp-release.jks"` komutu `True` döndürmelidir.
+Dosyayı ve parolayı güvenli iki yerde sakla. Dosya veya parola kaybolursa
 aynı uygulamaya güncelleme yayımlayamazsın. `budgetapp` burada anahtarın
 takma adıdır; değiştirmene gerek yok.
 
 Parolayı yazarken ekranda karakter görünmemesi normaldir. Bu parola, uygulama
 içindeki yedek dosyası parolasından farklı olabilir.
 Komut sonunda JKS biçimiyle ilgili bir uyarı görebilirsin; dosya oluştuysa
-bu uyarı işlemi durdurmaz.
+bu uyarı işlemi durdurmaz. Uyarıdaki dönüştürme komutunu çalıştırman gerekmez.
 
 ## 2. GitHub sırlarını ekle
 
@@ -48,11 +49,10 @@ repository secret** yolunu aç. Dört sır ekle:
 | `BUDGET_KEY_ALIAS` | `budgetapp` |
 | `BUDGET_KEY_PASSWORD` | Anahtarın parolası; aynı parola seçtiysen dosya parolası |
 
-`BUDGET_KEYSTORE_B64` değerini üretmek için Windows PowerShell'de, JKS
-dosyasının bulunduğu klasörde:
+`BUDGET_KEYSTORE_B64` değerini üretmek için Windows PowerShell'de:
 
 ```powershell
-[Convert]::ToBase64String([IO.File]::ReadAllBytes("BudgetApp-release.jks")) | Set-Clipboard
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("$env:USERPROFILE\BudgetApp-release.jks")) | Set-Clipboard
 ```
 
 Komut sonucu panoya kopyalar; GitHub sırrına yapıştır. macOS'ta
