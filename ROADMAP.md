@@ -137,8 +137,13 @@ emülatör hedeflenmez.
   dalda başarısız. Kullanıcının kendi Windows dosyasında ilk (dosya)
   parolasını ve `budgetapp` takma adını doğrulaması istendi. İkinci (anahtar)
   parola henüz sınanmadı; gizli değerler bu ortama alınmadı.
-- Sıradaki iş: Kullanıcının yerel JKS kontrolü sonucuna göre GitHub sırlarını
-  düzeltmesine yardımcı ol; ardından gerçek imzalı APK'yı ve telefonda
+- 2026-10-12: Kullanıcı kendi Windows bilgisayarında `keytool -list` sonucunda
+  `budgetapp` ve `PrivateKeyEntry` gördüğünü bildirdi. Yerel JKS dosyası,
+  ilk dosya parolası ve takma adı birlikte doğrulandı. GitHub'daki
+  `BUDGET_KEYSTORE_B64`, `BUDGET_KEYSTORE_PASSWORD` ve `BUDGET_KEY_ALIAS`
+  sırlarının aynı dosya ve parolayla yeniden kaydedilmesi bekleniyor.
+- Sıradaki iş: Kullanıcının GitHub sırlarını yenilemesine yardımcı ol;
+  ardından gerçek imzalı APK'yı ve telefonda
   kayıt/düzenleme/silme/yedek/geri yüklemeyi doğrula.
 
 ## Karar bekleyen konular
@@ -166,8 +171,8 @@ emülatör hedeflenmez.
 - Yedek: sürüm bilgisi bulunan tek dosya; Android dosya seçicisiyle dışa/içe
   aktarma; içe aktarma öncesi doğrulama ve bütünlüklü geri yükleme.
 - GitHub: kaynak kodu, plan ve test/derleme iş akışları `main` dalında;
-  imzalı APK iş akışının Android araç kurulumu adımı düzeltilip
-  doğrulanacak.
+  Android kontrolleri geçti, imzalı APK için GitHub sırrı değerlerinin
+  yerel imza dosyasıyla eşleşmesi doğrulanacak.
 - Uygulama hesabı, sunucu, Firebase, otomatik bulut eşitleme yok.
 
 ## Karar ve çalışma kuralı
