@@ -157,8 +157,16 @@ emülatör hedeflenmez.
   `BUDGET_KEYSTORE_PASSWORD` değeri dosyayı açamıyor. Kullanıcı ilk dosya
   parolasında Unicode karakter veya boşluk olduğunu bildirdi; baş/son boşluk
   ve yerel `keytool` bütünlük uyarısı hakkında yanıt bekleniyor.
+- 2026-10-12: Kullanıcı ilk dosya parolasının başında/sonunda boşluk
+  olmadığını, yerel `keytool -list` sonucunda bütünlük uyarısı çıkmadığını
+  bildirdi. Yerel parola çalışıyor; GitHub'daki kopya aynı dosya olmasına
+  rağmen GitHub'daki parola onu açamıyor. Örnek JKS dosyasında farklı bir
+  anahtar parolası korunarak yalnızca dosya parolası değiştirildi; imza
+  sertifikası aynı kaldı ve yeni parola çalıştı. Bu işlem gerçek anahtarda
+  yapılmadı. Kullanıcının ikinci parola karakter türü ve çözüm kararı
+  bekleniyor.
 - Sıradaki iş: İlk dosya parolasıyla GitHub sırrı arasındaki uyuşmazlığı
-  gider;
+  kullanıcıyla kararlaştırılan yolla gider;
   ardından gerçek imzalı APK'yı ve telefonda
   kayıt/düzenleme/silme/yedek/geri yüklemeyi doğrula.
 
