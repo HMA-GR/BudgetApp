@@ -177,8 +177,14 @@ emülatör hedeflenmez.
   JKS açma kontrolü eklendi. Windows'ta da aynı dosya özeti ve aynı
   `Keystore was tampered with, or password was incorrect` hatası görüldü;
   sorun yalnızca Linux'a özgü değil. Mevcut sır değerlerini değiştirmeden
-  Unicode biçimleri, dış boşluklar ve iki parola alanının olası karışması
-  sınanacak; parola metni günlüğe yazılmayacak.
+  Unicode normalleştirmeleri, dış boşluk/tırnak/görünmez işaretler, iki parola
+  alanının olası karışması ve yaygın Windows kod sayfaları sınandı; hiçbiri
+  dosyayı açmadı. Takma ad denemeden çıkarılarak yalnızca ilk dosya parolası
+  sınandı. GitHub denemeleri: `38285322839`, `38285455516`, `38285627991`.
+  Parola metni hiçbir günlüğe yazılmadı. Kullanıcıdan Windows'ta ilk parolayı
+  gizli istemden alıp `keytool -storepass:env` ile denemesinin yalnızca çıkış
+  kodu istendi; sonuç bekleniyor. Bu, yerel etkileşimli istem ile ortam
+  değişkeni okumasının ayrılıp ayrılmadığını gösterecek.
 - Sıradaki iş: İlk dosya parolasıyla GitHub sırrı arasındaki uyuşmazlığı
   mevcut sırları koruyarak teşhis edip gider;
   ardından gerçek imzalı APK'yı ve telefonda
