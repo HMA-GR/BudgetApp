@@ -125,9 +125,14 @@ emülatör hedeflenmez.
 - 2026-10-12: GitHub'ın Ubuntu 24.04 çalıştırıcı görüntüsü dökümünde
   Android 36 platformu, Build Tools 36.0.0 ve `ANDROID_HOME` hazır görünüyor.
   Hata veren ek SDK kurulum adımı iki iş akışından çıkarıldı; hazır araçlar
-  için dosya kontrolü eklendi. GitHub'da yeni çalışmaların sonucu bekleniyor.
-- Sıradaki iş: Android kurulum adımındaki hatanın ayrıntısını bulup iş
-  akışını düzelt; sonra gerçek imzalı APK'yı ve telefonda
+  için dosya kontrolü eklendi. Sonraki GitHub çalışmalarında iki dalın
+  Android testleri geçti; imzalı APK işleri ise `Build signed APK` adımında
+  başarısız. Bu tek adım dosya çözme, derleme ve imza doğrulamayı birlikte
+  yaptığı için nedenini sonuç özetinden ayırt etmek mümkün değildi. İş akışı
+  sır/dosya, dosya parolası ve takma ad, APK derleme, imza doğrulama olarak
+  ayrı adımlara bölündü; yeni sonucu bekleniyor.
+- Sıradaki iş: İmzalı APK işinin hangi adımda durduğunu doğrula, ilgili
+  hatayı düzelt; sonra gerçek imzalı APK'yı ve telefonda
   kayıt/düzenleme/silme/yedek/geri yüklemeyi doğrula.
 
 ## Karar bekleyen konular
