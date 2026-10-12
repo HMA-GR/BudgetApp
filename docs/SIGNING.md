@@ -105,14 +105,15 @@ aktardığından emin değilsen yukarıdaki Base64 komutuyla
 `BUDGET_KEYSTORE_B64` değerini yeniden oluştur. Parolaları ve Base64 metnini
 sohbete veya depoya gönderme.
 
-## Unicode parola uyumsuzluğunu giderme (önce karar verilecek)
+## Unicode parola uyumsuzluğunu giderme
 
 Yerel JKS dosyasının SHA-256 özeti GitHub'da çözülen dosyayla aynı olduğu
 halde GitHub ilk parolayla dosyayı açamıyorsa, **dosya ve anahtar koruma
 parolalarını** standart karakterli iki yeni parolaya çevirmek bir seçenektir.
 Bu işlem imza anahtarını veya sertifikasını değiştirmez; doğru yapıldığını
-sertifikanın SHA-256 parmak izini karşılaştırarak denetleyeceğiz. Gerçek
-dosyada değişiklik yapmadan önce kullanıcı bu yolu seçmelidir.
+sertifikanın SHA-256 parmak izini karşılaştırarak denetleyeceğiz. Kullanıcı
+iki parolayı değiştirme yolunu seçti; önce bilgisayar dışındaki yedek ve
+eski sertifika parmak izi doğrulanacak.
 
 1. `BudgetApp-release.jks` dosyasının bir kopyasını bilgisayar dışında
    güvenli bir USB belleğe veya şifreli dosya kasasına kaydet. Eski dosyayı

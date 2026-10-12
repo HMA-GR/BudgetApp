@@ -167,9 +167,12 @@ emülatör hedeflenmez.
   olduğunu bildirdi. Örnek JKS'de iki koruma parolasının birlikte
   değiştirilmesi de denendi; sertifika aynı kaldı ve yeni parolalar çalıştı.
   Gerçek JKS için güvenli kopya, iki parola değişimi ve sertifika parmak izi
-  kontrolü içeren yönerge hazırlandı. Kullanıcının çözüm kararı bekleniyor.
+  kontrolü içeren yönerge hazırlandı.
+- 2026-10-12: Kullanıcı iki koruma parolasını standart karakterli iki yeni
+  parolaya çevirme yolunu seçti. Önce bilgisayar dışı JKS kopyası ve eski
+  sertifika SHA-256 parmak izi doğrulanacak. Gerçek JKS henüz değiştirilmedi.
 - Sıradaki iş: İlk dosya parolasıyla GitHub sırrı arasındaki uyuşmazlığı
-  kullanıcıyla kararlaştırılan yolla gider;
+  kararlaştırılan parola değişimiyle gider;
   ardından gerçek imzalı APK'yı ve telefonda
   kayıt/düzenleme/silme/yedek/geri yüklemeyi doğrula.
 
