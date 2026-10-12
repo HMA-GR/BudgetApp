@@ -98,9 +98,17 @@ emülatör hedeflenmez.
   kategori ilişkilerinin doğrulanması dahil 6 JVM testi geçti. Compose
   ekran görüntüsü doğrulaması, debug APK ve lint başarılı. Beş tarayıcı
   görseli üretildi ve incelendi. Gerçek telefonda yükseltme henüz sınanmadı.
+- 2026-10-12: Kullanıcı gelir, gider ve yatırıma ayrılan tutar kayıtlarının
+  düzenlenip silinmesini seçti. Kayıt açıklaması, tutarı ve uygun kategori
+  için düzenleme; silme öncesi onay kodlandı. Bu değişiklik veritabanı veya
+  yedek biçimini değiştirmiyor. Altı JVM testi, ekran görüntüsü doğrulaması,
+  lint ve debug APK derlemesi geçti; üç değişen tarayıcı görüntüsü üretildi
+  ve görsel olarak incelendi. Örnek verilerle telefon deneme yönergesi
+  eklendi. Düzenleme/silme davranışı telefonda henüz sınanmadı.
 - Sıradaki iş: Kullanıcının GitHub imza sırlarını eklemesinden sonra iş
-  akışını ve telefonda kayıt/yedek/geri yüklemeyi doğrula. Kayıt
-  düzenleme/silme ihtiyacını netleştir.
+  akışını ve telefonda kayıt/düzenleme/silme/yedek/geri yüklemeyi doğrula.
+  GitHub Actions çalışmaları bu ortamın GitHub API erişiminde `Forbidden`
+  yanıtı verdiğinden henüz dışarıdan doğrulanamadı.
 
 ## Karar bekleyen konular
 
@@ -117,6 +125,8 @@ emülatör hedeflenmez.
   eklenmesi bekleniyor.
 - Gelir ve gider kategorilerini kullanıcı oluşturup düzenleyecek; bunlar
   bütün aylarda ortak olacak. Kullanıcı tarafından kararlaştırıldı.
+- Gelir, gider ve yatırıma ayrılan tutar kayıtları düzenlenebilir ve
+  silinebilir. Kullanıcı tarafından kararlaştırıldı.
 
 ## Teknik yön
 

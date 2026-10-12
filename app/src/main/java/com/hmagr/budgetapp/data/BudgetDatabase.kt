@@ -91,7 +91,7 @@ class BudgetDatabase(context: Context) : SQLiteOpenHelper(context, "budget.db", 
         val entries = mutableListOf<BudgetEntryUi>()
         readableDatabase.rawQuery(
             """
-            SELECT e.title, e.amount_cents, e.type, c.name
+            SELECT e.id, e.title, e.amount_cents, e.type, c.name, e.category_id
             FROM entries e LEFT JOIN categories c ON c.id = e.category_id
             WHERE e.month = ? ORDER BY e.id DESC
             """.trimIndent(),
@@ -99,14 +99,46 @@ class BudgetDatabase(context: Context) : SQLiteOpenHelper(context, "budget.db", 
         ).use { cursor ->
             while (cursor.moveToNext()) {
                 entries += BudgetEntryUi(
-                    title = cursor.getString(0),
-                    amountCents = cursor.getLong(1),
-                    type = EntryType.valueOf(cursor.getString(2)),
-                    categoryName = if (cursor.isNull(3)) null else cursor.getString(3),
+                    title = cursor.getString(1),
+                    amountCents = cursor.getLong(2),
+                    type = EntryType.valueOf(cursor.getString(3)),
+                    categoryName = if (cursor.isNull(4)) null else cursor.getString(4),
+                    id = cursor.getLong(0),
+                    categoryId = if (cursor.isNull(5)) null else cursor.getLong(5),
                 )
             }
         }
         return entries
+    }
+
+    fun updateEntry(
+        id: Long,
+        month: YearMonth,
+        type: EntryType,
+        title: String,
+        amountCents: Long,
+        categoryId: Long?,
+    ) {
+        val cleaned = title.trim()
+        require(id > 0 && cleaned.isNotEmpty() && cleaned.length <= 200 && amountCents > 0)
+        if (categoryId != null) require(categoryType(categoryId) == type)
+        val values = ContentValues().apply {
+            put("title", cleaned)
+            put("amount_cents", amountCents)
+            if (categoryId == null) putNull("category_id") else put("category_id", categoryId)
+        }
+        check(writableDatabase.update(
+            "entries", values, "id = ? AND month = ? AND type = ?",
+            arrayOf(id.toString(), month.toString(), type.name),
+        ) == 1)
+    }
+
+    fun deleteEntry(id: Long, month: YearMonth, type: EntryType) {
+        require(id > 0)
+        check(writableDatabase.delete(
+            "entries", "id = ? AND month = ? AND type = ?",
+            arrayOf(id.toString(), month.toString(), type.name),
+        ) == 1)
     }
 
     fun categories(): List<BudgetCategoryUi> {

@@ -137,6 +137,34 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     },
+                    onUpdateEntry = { entry, title, cents, categoryId ->
+                        val targetMonth = month
+                        scope.launch {
+                            try {
+                                withContext(Dispatchers.IO) {
+                                    database.value.updateEntry(
+                                        requireNotNull(entry.id), targetMonth, entry.type, title, cents, categoryId,
+                                    )
+                                }
+                                revision++
+                            } catch (error: Exception) {
+                                Toast.makeText(this@MainActivity, "Kayıt güncellenemedi", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    },
+                    onDeleteEntry = { entry ->
+                        val targetMonth = month
+                        scope.launch {
+                            try {
+                                withContext(Dispatchers.IO) {
+                                    database.value.deleteEntry(requireNotNull(entry.id), targetMonth, entry.type)
+                                }
+                                revision++
+                            } catch (error: Exception) {
+                                Toast.makeText(this@MainActivity, "Kayıt silinemedi", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    },
                     onAddCategory = { type, name ->
                         scope.launch {
                             try {

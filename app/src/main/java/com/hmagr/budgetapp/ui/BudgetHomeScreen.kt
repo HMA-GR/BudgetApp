@@ -34,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -54,6 +55,8 @@ data class BudgetEntryUi(
     val amountCents: Long,
     val type: EntryType,
     val categoryName: String? = null,
+    val id: Long? = null,
+    val categoryId: Long? = null,
 )
 
 data class BudgetCategoryUi(
@@ -78,6 +81,8 @@ fun BudgetHomeScreen(
     state: BudgetHomeUiState,
     onMonthSelected: (YearMonth) -> Unit = {},
     onAddEntry: (EntryType, String, Long, Long?) -> Unit = { _, _, _, _ -> },
+    onUpdateEntry: (BudgetEntryUi, String, Long, Long?) -> Unit = { _, _, _, _ -> },
+    onDeleteEntry: (BudgetEntryUi) -> Unit = {},
     onAddCategory: (EntryType, String) -> Unit = { _, _ -> },
     onRenameCategory: (Long, String) -> Unit = { _, _ -> },
     onSaveInvestmentValue: (Long) -> Unit = {},
@@ -89,6 +94,8 @@ fun BudgetHomeScreen(
     val scope = rememberCoroutineScope()
     var monthPickerOpen by remember { mutableStateOf(false) }
     var addType by remember { mutableStateOf<EntryType?>(null) }
+    var editingEntry by remember { mutableStateOf<BudgetEntryUi?>(null) }
+    var deletingEntry by remember { mutableStateOf<BudgetEntryUi?>(null) }
     var categoryType by remember { mutableStateOf<EntryType?>(null) }
     var valueDialogOpen by remember { mutableStateOf(false) }
 
@@ -144,6 +151,7 @@ fun BudgetHomeScreen(
                     state.investmentValueCents,
                     onEditInvestmentValue = { valueDialogOpen = true },
                     onManageCategories = { categoryType = types[page] },
+                    onEditEntry = { editingEntry = it },
                 )
             }
         }
@@ -159,15 +167,46 @@ fun BudgetHomeScreen(
         )
     }
     addType?.let { type ->
-        AddEntryDialog(
+        EntryEditorDialog(
             type = type,
             month = state.month,
             categories = state.categories.filter { it.type == type },
             onDismiss = { addType = null },
-            onAdd = { title, cents, selectedCategoryId ->
+            onSave = { title, cents, selectedCategoryId ->
                 onAddEntry(type, title, cents, selectedCategoryId)
                 addType = null
             },
+        )
+    }
+    editingEntry?.let { entry ->
+        EntryEditorDialog(
+            type = entry.type,
+            month = state.month,
+            categories = state.categories.filter { it.type == entry.type },
+            initialEntry = entry,
+            onDismiss = { editingEntry = null },
+            onSave = { title, cents, selectedCategoryId ->
+                onUpdateEntry(entry, title, cents, selectedCategoryId)
+                editingEntry = null
+            },
+            onDeleteRequest = {
+                editingEntry = null
+                deletingEntry = entry
+            },
+        )
+    }
+    deletingEntry?.let { entry ->
+        AlertDialog(
+            onDismissRequest = { deletingEntry = null },
+            title = { Text("Kaydı sil?") },
+            text = { Text("“${entry.title}” kaydı silinecek. Bu işlem geri alınamaz.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    onDeleteEntry(entry)
+                    deletingEntry = null
+                }) { Text("Sil") }
+            },
+            dismissButton = { TextButton(onClick = { deletingEntry = null }) { Text("Vazgeç") } },
         )
     }
     categoryType?.let { type ->
@@ -228,6 +267,7 @@ private fun EntryPage(
     investmentValueCents: Long?,
     onEditInvestmentValue: () -> Unit,
     onManageCategories: () -> Unit,
+    onEditEntry: (BudgetEntryUi) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -280,7 +320,12 @@ private fun EntryPage(
                                 Text(it, style = MaterialTheme.typography.bodySmall)
                             }
                         }
-                        Text(formatMoney(entry.amountCents), style = MaterialTheme.typography.bodyLarge)
+                        Column(horizontalAlignment = Alignment.End) {
+                            Text(formatMoney(entry.amountCents), style = MaterialTheme.typography.bodyLarge)
+                            if (entry.id != null) {
+                                TextButton(onClick = { onEditEntry(entry) }) { Text("Düzenle") }
+                            }
+                        }
                     }
                 }
             }
@@ -363,21 +408,25 @@ private fun MonthPickerDialog(
 }
 
 @Composable
-private fun AddEntryDialog(
+private fun EntryEditorDialog(
     type: EntryType,
     month: YearMonth,
     categories: List<BudgetCategoryUi>,
+    initialEntry: BudgetEntryUi? = null,
     onDismiss: () -> Unit,
-    onAdd: (String, Long, Long?) -> Unit,
+    onSave: (String, Long, Long?) -> Unit,
+    onDeleteRequest: (() -> Unit)? = null,
 ) {
-    var title by remember(type) { mutableStateOf("") }
-    var amount by remember(type) { mutableStateOf("") }
-    var selectedCategoryId by remember(type) { mutableStateOf<Long?>(null) }
+    var title by remember(type, initialEntry?.id) { mutableStateOf(initialEntry?.title.orEmpty()) }
+    var amount by remember(type, initialEntry?.id) {
+        mutableStateOf(initialEntry?.amountCents?.let { BigDecimal.valueOf(it, 2).toPlainString() }.orEmpty())
+    }
+    var selectedCategoryId by remember(type, initialEntry?.id) { mutableStateOf(initialEntry?.categoryId) }
     var categoryMenuOpen by remember { mutableStateOf(false) }
     val cents = parseMoney(amount)
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(type.label + " ekle") },
+        title = { Text(type.label + if (initialEntry == null) " ekle" else " kaydını düzenle") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(formatMonth(month) + " kayıtları için", style = MaterialTheme.typography.bodyMedium)
@@ -434,11 +483,18 @@ private fun AddEntryDialog(
         },
         confirmButton = {
             TextButton(
-                onClick = { cents?.let { onAdd(title.trim(), it, selectedCategoryId) } },
+                onClick = { cents?.let { onSave(title.trim(), it, selectedCategoryId) } },
                 enabled = title.isNotBlank() && cents != null,
-            ) { Text("Ekle") }
+            ) { Text(if (initialEntry == null) "Ekle" else "Kaydet") }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Vazgeç") } },
+        dismissButton = {
+            Row {
+                if (initialEntry != null && onDeleteRequest != null) {
+                    TextButton(onClick = onDeleteRequest) { Text("Sil") }
+                }
+                TextButton(onClick = onDismiss) { Text("Vazgeç") }
+            }
+        },
     )
 }
 
@@ -466,11 +522,11 @@ internal fun sampleBudgetHomeUiState() = BudgetHomeUiState(
     expenseCents = 1_180_000,
     investmentValueCents = 530_000,
     entries = listOf(
-        BudgetEntryUi("Maaş", 3_000_000, EntryType.INCOME, "İş"),
-        BudgetEntryUi("Birikim", 500_000, EntryType.INVESTMENT),
-        BudgetEntryUi("Market", 420_000, EntryType.EXPENSE, "Gıda"),
-        BudgetEntryUi("Faturalar", 510_000, EntryType.EXPENSE, "Ev"),
-        BudgetEntryUi("Ulaşım", 250_000, EntryType.EXPENSE, "Ulaşım"),
+        BudgetEntryUi("Maaş", 3_000_000, EntryType.INCOME, "İş", id = 1, categoryId = 1),
+        BudgetEntryUi("Birikim", 500_000, EntryType.INVESTMENT, id = 2),
+        BudgetEntryUi("Market", 420_000, EntryType.EXPENSE, "Gıda", id = 3, categoryId = 2),
+        BudgetEntryUi("Faturalar", 510_000, EntryType.EXPENSE, "Ev", id = 4, categoryId = 3),
+        BudgetEntryUi("Ulaşım", 250_000, EntryType.EXPENSE, "Ulaşım", id = 5, categoryId = 4),
     ),
     categories = listOf(
         BudgetCategoryUi(1, EntryType.INCOME, "İş"),

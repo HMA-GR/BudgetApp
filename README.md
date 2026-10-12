@@ -36,6 +36,9 @@ seçebilir, bölümleri sağa sola kaydırabilir ve alttaki düğmelerle kayıt
 ekleyebilirsin.
 Gelir ve Gider bölümlerindeki **kategorilerini yönet** düğmesiyle kategori
 ekleyebilir veya adını değiştirebilirsin. Yeni kayıtta kategoriyi seçebilirsin.
+Bir kayıttaki **Düzenle** düğmesi açıklamasını, tutarını ve varsa kategorisini
+değiştirir. Aynı penceredeki **Sil** düğmesi ayrıca onay ister. Düzenleme ve
+silme gelir, gider ve yatırıma ayrılan tutar kayıtlarında çalışır.
 Eski kategorisiz kayıtlar korunur; önceki şifreli yedekler açılabilir.
 
 ## Android Studio ile canlı ekran ön izlemesi (isteğe bağlı)
@@ -63,7 +66,8 @@ satırında macOS/Linux için `./gradlew :app:assembleDebug`, Windows için
 `app/build/outputs/apk/debug/app-debug.apk`.
 
 Bu geliştirme APK'sında ay seçimi, gelir/yatırım/gider kaydı, yatırımın
-aylık güncel değerini girme ve şifreli dosyayı dışa/içe aktarma kodlandı.
+aylık güncel değerini girme, kayıt düzenleme/silme ve şifreli dosyayı
+dışa/içe aktarma kodlandı.
 Uygulamayı kapatıp açma ve dosyayı başka telefona taşıma akışları gerçek
 Android cihazda henüz doğrulanmadı.
 
@@ -74,6 +78,8 @@ akışları hazırlandı. APK'nın her sürümde aynı uygulamanın üzerine kur
 için anahtarı kendi bilgisayarında oluşturup GitHub sırlarına eklemelisin.
 Adımlar [imza anahtarı yönergesinde](docs/SIGNING.md). Gerçek anahtar Git
 deposuna konmaz; sırlar eklenene kadar imzalı APK iş akışı tamamlanamaz.
+APK hazır olduğunda [telefon deneme adımları](docs/PHONE_TESTING.md) üzerinden
+örnek tutarlarla kayıt, düzeltme ve yedek geri yükleme kontrol edilebilir.
 
 ## Ekran görüntülerini yenileme
 

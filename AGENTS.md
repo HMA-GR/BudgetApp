@@ -17,6 +17,3 @@
   kaydet ve dur. Kullanıcı açıkça "başla" diyene kadar kodlama veya başka
   proje işlemine devam etme. Oran görülemiyorsa tahmin yürütme; kullanıcıdan
   güncel oranı iste ve otomatik izleme varmış gibi davranma.
-- Kullanıcı 2026-10-11'de çalışmanın hemen duraklatılmasını istedi. "Başla"
-  komutu gelene kadar BudgetApp geliştirmesini sürdürme. Bu geçici satırı
-  çalışmaya devam edildiğinde kaldır.
