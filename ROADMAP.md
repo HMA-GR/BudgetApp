@@ -130,7 +130,9 @@ emülatör hedeflenmez.
   başarısız. Bu tek adım dosya çözme, derleme ve imza doğrulamayı birlikte
   yaptığı için nedenini sonuç özetinden ayırt etmek mümkün değildi. İş akışı
   sır/dosya, dosya parolası ve takma ad, APK derleme, imza doğrulama olarak
-  ayrı adımlara bölündü; yeni sonucu bekleniyor.
+  ayrı adımlara bölündü. İlk gönderimde son komutun YAML yazımı hatalıydı;
+  GitHub iş başlamadan reddetti. Yazım düzeltildi ve YAML ayrıştırıcısıyla
+  kontrol edildi; yeni sonucu bekleniyor.
 - Sıradaki iş: İmzalı APK işinin hangi adımda durduğunu doğrula, ilgili
   hatayı düzelt; sonra gerçek imzalı APK'yı ve telefonda
   kayıt/düzenleme/silme/yedek/geri yüklemeyi doğrula.
