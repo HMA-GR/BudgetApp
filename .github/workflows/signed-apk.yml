@@ -23,8 +23,6 @@ jobs:
           test -f "$ANDROID_HOME/platforms/android-36/android.jar"
           test -x "$ANDROID_HOME/build-tools/36.0.0/apksigner"
       - uses: gradle/actions/setup-gradle@v4
-      - name: Test and validate screenshots
-        run: ./gradlew :app:testDebugUnitTest :app:validateDebugScreenshotTest :app:lintDebug --no-daemon
       - name: Check signing secrets and decode file
         env:
           BUDGET_KEYSTORE_B64: ${{ secrets.BUDGET_KEYSTORE_B64 }}
@@ -44,7 +42,9 @@ jobs:
         env:
           BUDGET_KEYSTORE_PASSWORD: ${{ secrets.BUDGET_KEYSTORE_PASSWORD }}
           BUDGET_KEY_ALIAS: ${{ secrets.BUDGET_KEY_ALIAS }}
-        run: keytool -list -storetype JKS -keystore "$BUDGET_KEYSTORE_FILE" -storepass:env BUDGET_KEYSTORE_PASSWORD -alias "$BUDGET_KEY_ALIAS" > /dev/null
+        run: keytool -list -storetype JKS -keystore "$BUDGET_KEYSTORE_FILE" -storepass:env BUDGET_KEYSTORE_PASSWORD -alias "$BUDGET_KEY_ALIAS"
+      - name: Test and validate screenshots
+        run: ./gradlew :app:testDebugUnitTest :app:validateDebugScreenshotTest :app:lintDebug --no-daemon
       - name: Build signed APK
         env:
           BUDGET_KEYSTORE_PASSWORD: ${{ secrets.BUDGET_KEYSTORE_PASSWORD }}

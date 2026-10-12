@@ -142,7 +142,13 @@ emülatör hedeflenmez.
   ilk dosya parolası ve takma adı birlikte doğrulandı. GitHub'daki
   `BUDGET_KEYSTORE_B64`, `BUDGET_KEYSTORE_PASSWORD` ve `BUDGET_KEY_ALIAS`
   sırlarının aynı dosya ve parolayla yeniden kaydedilmesi bekleniyor.
-- Sıradaki iş: Kullanıcının GitHub sırlarını yenilemesine yardımcı ol;
+- 2026-10-12: Kullanıcı bu üç GitHub sırrını yenilediğini bildirdi.
+  `main` için yeniden başlatılan imzalı APK işi aynı `keytool -list`
+  kontrolünde durdu. GitHub günlüğünde komutun çıktısı gizlendiği için
+  neden görünmedi; kontrol komutunun çıktı yönlendirmesi kaldırıldı ve
+  kontrol testlerden önceye taşındı. Gizli değerler okunmadı veya depoya
+  eklenmedi; yeni iş sonucu bekleniyor.
+- Sıradaki iş: Yeni GitHub günlüğündeki imza dosyası hatasını teşhis et;
   ardından gerçek imzalı APK'yı ve telefonda
   kayıt/düzenleme/silme/yedek/geri yüklemeyi doğrula.
 
