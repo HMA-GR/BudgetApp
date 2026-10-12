@@ -146,9 +146,13 @@ emülatör hedeflenmez.
   `main` için yeniden başlatılan imzalı APK işi aynı `keytool -list`
   kontrolünde durdu. GitHub günlüğünde komutun çıktısı gizlendiği için
   neden görünmedi; kontrol komutunun çıktı yönlendirmesi kaldırıldı ve
-  kontrol testlerden önceye taşındı. Gizli değerler okunmadı veya depoya
-  eklenmedi; yeni iş sonucu bekleniyor.
-- Sıradaki iş: Yeni GitHub günlüğündeki imza dosyası hatasını teşhis et;
+  kontrol testlerden önceye taşındı. Yeni günlükte `Keystore was tampered
+  with, or password was incorrect` hatası görüldü. Bu, GitHub'daki JKS
+  kopyasıyla ilk parola eşleşmediğinde de olur. GitHub'da çözülen JKS'nin
+  SHA-256 dosya özeti günlükte gösterilecek; kullanıcıdan yerel dosyanın
+  özeti istendi. Dosya veya parolanın kendisi okunmadı veya depoya eklenmedi.
+- Sıradaki iş: İki dosya özetini karşılaştırıp imza sırrındaki uyuşmazlığı
+  gider;
   ardından gerçek imzalı APK'yı ve telefonda
   kayıt/düzenleme/silme/yedek/geri yüklemeyi doğrula.
 

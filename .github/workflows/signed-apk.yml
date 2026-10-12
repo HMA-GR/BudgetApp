@@ -37,6 +37,8 @@ jobs:
           : "${BUDGET_KEY_PASSWORD:?GitHub secret BUDGET_KEY_PASSWORD eksik}"
           umask 077
           printf '%s' "$BUDGET_KEYSTORE_B64" | base64 --decode > "$RUNNER_TEMP/budget-release.jks"
+          printf 'Signing file SHA-256: '
+          sha256sum "$RUNNER_TEMP/budget-release.jks" | cut -d ' ' -f1
           echo "BUDGET_KEYSTORE_FILE=$RUNNER_TEMP/budget-release.jks" >> "$GITHUB_ENV"
       - name: Check keystore password and alias
         env:
