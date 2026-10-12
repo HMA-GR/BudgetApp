@@ -37,12 +37,14 @@ jobs:
             unicode_form_kc = $savedPassword.Normalize([Text.NormalizationForm]::FormKC)
             unicode_form_kd = $savedPassword.Normalize([Text.NormalizationForm]::FormKD)
             outer_whitespace_removed = $savedPassword.Trim()
+            outer_quotes_or_invisible_marks_removed = $savedPassword.Trim([char[]]@([char]34, [char]39, [char]0xFEFF, [char]0x200B))
+            outer_whitespace_quotes_or_invisible_marks_removed = $savedPassword.Trim().Trim([char[]]@([char]34, [char]39, [char]0xFEFF, [char]0x200B)).Trim()
             other_password_field = $env:BUDGET_KEY_PASSWORD
           }
           foreach ($candidate in $candidates.GetEnumerator()) {
             if ([string]::IsNullOrEmpty($candidate.Value)) { continue }
             $env:BUDGET_KEYSTORE_PASSWORD = $candidate.Value
-            keytool -list -storetype JKS -keystore $keyStorePath -storepass:env BUDGET_KEYSTORE_PASSWORD -alias $env:BUDGET_KEY_ALIAS > $null 2>&1
+            keytool -list -storetype JKS -keystore $keyStorePath -storepass:env BUDGET_KEYSTORE_PASSWORD > $null 2>&1
             if ($LASTEXITCODE -eq 0) {
               Write-Output "Compatible password form: $($candidate.Key)"
               exit 0
